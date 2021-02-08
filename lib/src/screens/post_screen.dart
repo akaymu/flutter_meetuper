@@ -49,13 +49,14 @@ class _PostList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: _posts.map((post) {
+    return ListView.builder(
+      itemCount: _posts.length,
+      itemBuilder: (BuildContext context, int index) {
         return ListTile(
-          title: Text(post['title']),
-          subtitle: Text(post['body']),
+          title: Text(_posts[index]['title']),
+          subtitle: Text(_posts[index]['body']),
         );
-      }).toList(),
+      },
     );
   }
 }
