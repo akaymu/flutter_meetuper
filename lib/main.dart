@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meetuper/src/screens/meetup_detail_screen.dart';
+import 'package:flutter_meetuper/src/screens/post_screen.dart';
 import 'src/screens/counter_home_screen.dart';
 
 void main() {
@@ -14,9 +15,7 @@ class MeetuperApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: CounterHomeScreen(
-        title: appTitle,
-      ),
+      home: PostScreen(),
       routes: {
         MeetupDetailScreen.route: (context) => MeetupDetailScreen(),
       },
