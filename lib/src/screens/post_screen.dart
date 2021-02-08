@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/models/post.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_meetuper/src/widgets/bottom_navigation.dart';
@@ -11,7 +12,7 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-  List<dynamic> _posts = [];
+  List<Post> _posts = [];
 
   @override
   void initState() {
@@ -21,7 +22,9 @@ class _PostScreenState extends State<PostScreen> {
 
   void _fetchPosts() {
     http.get('https://jsonplaceholder.typicode.com/posts').then((res) {
-      final posts = json.decode(res.body);
+      final List<dynamic> parsedPosts = json.decode(res.body);
+      final posts =
+          parsedPosts.map((parsedPost) => Post.fromJson(parsedPost)).toList();
       setState(() => _posts = posts);
     });
   }
@@ -44,25 +47,11 @@ class _PostScreenState extends State<PostScreen> {
 }
 
 class _PostList extends StatelessWidget {
-  final List<dynamic> _posts;
+  final List<Post> _posts;
   _PostList({List<dynamic> posts}) : _posts = posts;
 
   @override
   Widget build(BuildContext context) {
-    // return ListView.builder(
-    //   itemCount: _posts.length,
-    //   itemBuilder: (BuildContext context, int index) {
-    //     return Column(
-    //       children: [
-    //         Divider(),
-    //         ListTile(
-    //           title: Text(_posts[index]['title']),
-    //           subtitle: Text(_posts[index]['body']),
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
     return ListView.builder(
       itemCount: _posts.length * 2,
       itemBuilder: (BuildContext context, int i) {
@@ -73,8 +62,8 @@ class _PostList extends StatelessWidget {
         final int index = i ~/ 2;
 
         return ListTile(
-          title: Text(_posts[index]['title']),
-          subtitle: Text(_posts[index]['body']),
+          title: Text(_posts[index].title),
+          subtitle: Text(_posts[index].body),
         );
       },
     );
