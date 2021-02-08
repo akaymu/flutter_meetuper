@@ -45,16 +45,24 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
         tooltip: 'Increment',
         onPressed: _increment,
       ),
-      bottomNavigationBar: _BottomNavigation(),
+      bottomNavigationBar: BottomNavigation(),
     );
   }
 }
 
-class _BottomNavigation extends StatelessWidget {
+class BottomNavigation extends StatefulWidget {
+  @override
+  _BottomNavigationState createState() => _BottomNavigationState();
+}
+
+class _BottomNavigationState extends State<BottomNavigation> {
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      currentIndex: 0,
+      onTap: (tappedIndex) => setState(() => _currentIndex = tappedIndex),
+      currentIndex: _currentIndex,
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
