@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/screens/meetup_detail_screen.dart';
 
 class CounterHomeScreen extends StatefulWidget {
   final String _title;
@@ -36,6 +37,12 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
               'Click Counter: $_counter',
               textDirection: TextDirection.ltr,
               style: TextStyle(fontSize: 30.0),
+            ),
+            RaisedButton(
+              child: Text('Go To Detail'),
+              onPressed: () {
+                Navigator.pushNamed(context, '/meetupDetail');
+              },
             ),
           ],
         ),
