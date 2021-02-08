@@ -14,7 +14,10 @@ class _PostScreenState extends State<PostScreen> {
   @override
   void initState() {
     super.initState();
+    _fetchPosts();
+  }
 
+  void _fetchPosts() {
     http.get('https://jsonplaceholder.typicode.com/posts').then((res) {
       final posts = json.decode(res.body);
       setState(() => _posts = posts);
@@ -27,17 +30,13 @@ class _PostScreenState extends State<PostScreen> {
       appBar: AppBar(
         title: Text('Posts'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Welcome in Post Screen',
-              textDirection: TextDirection.ltr,
-              style: TextStyle(fontSize: 15.0),
-            ),
-          ],
-        ),
+      body: ListView(
+        children: _posts.map((post) {
+          return ListTile(
+            title: Text(post['title']),
+            subtitle: Text(post['body']),
+          );
+        }).toList(),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
