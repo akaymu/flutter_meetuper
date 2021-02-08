@@ -18,7 +18,7 @@ class MeetuperApp extends StatelessWidget {
         title: appTitle,
       ),
       routes: {
-        '/meetupDetail': (context) => MeetupDetailScreen(),
+        MeetupDetailScreen.route: (context) => MeetupDetailScreen(),
       },
     );
   }
