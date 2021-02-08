@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_meetuper/src/widgets/bottom_navigation.dart';
+
+import '../widgets/bottom_navigation.dart';
 
 class MeetupDetailScreen extends StatelessWidget {
   static final String route = '/meetupDetail';

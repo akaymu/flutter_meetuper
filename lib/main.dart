@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_meetuper/src/screens/meetup_detail_screen.dart';
-import 'package:flutter_meetuper/src/screens/post_screen.dart';
-import 'src/screens/counter_home_screen.dart';
+
+import 'src/screens/meetup_detail_screen.dart';
+import 'src/screens/post_screen.dart';
 
 void main() {
   runApp(MeetuperApp());
