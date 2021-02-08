@@ -49,9 +49,29 @@ class _PostList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // return ListView.builder(
+    //   itemCount: _posts.length,
+    //   itemBuilder: (BuildContext context, int index) {
+    //     return Column(
+    //       children: [
+    //         Divider(),
+    //         ListTile(
+    //           title: Text(_posts[index]['title']),
+    //           subtitle: Text(_posts[index]['body']),
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
     return ListView.builder(
-      itemCount: _posts.length,
-      itemBuilder: (BuildContext context, int index) {
+      itemCount: _posts.length * 2,
+      itemBuilder: (BuildContext context, int i) {
+        if (i.isOdd) {
+          return Divider();
+        }
+
+        final int index = i ~/ 2;
+
         return ListTile(
           title: Text(_posts[index]['title']),
           subtitle: Text(_posts[index]['body']),
