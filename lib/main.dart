@@ -5,12 +5,22 @@ void main() {
 }
 
 class MeetuperApp extends StatelessWidget {
+  final String appTitle = 'Meetuper App';
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Welcome in Meetuper App!',
-        textDirection: TextDirection.ltr,
+    return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(appTitle),
+        ),
+        body: Center(
+          child: Text(
+            'Welcome in $appTitle!',
+            textDirection: TextDirection.ltr,
+          ),
+        ),
       ),
     );
   }
