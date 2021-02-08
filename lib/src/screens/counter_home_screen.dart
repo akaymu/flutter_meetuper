@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class CounterHomeScreen extends StatefulWidget {
   final String _title;
-
   CounterHomeScreen({String title}) : _title = title;
 
   @override
@@ -46,6 +45,30 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
         tooltip: 'Increment',
         onPressed: _increment,
       ),
+      bottomNavigationBar: _BottomNavigation(),
+    );
+  }
+}
+
+class _BottomNavigation extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: 0,
+      items: [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: 'Settings',
+        ),
+      ],
     );
   }
 }
