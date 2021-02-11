@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:faker/faker.dart';
 
 import '../models/post.dart';
 import '../services/post_api_provider.dart';
@@ -25,6 +26,15 @@ class _PostScreenState extends State<PostScreen> {
     setState(() => _posts = posts);
   }
 
+  void _addPost() {
+    final id = faker.randomGenerator.integer(9999);
+    final title = faker.food.dish();
+    final body = faker.food.cuisine();
+    final newPost = Post(id: id, title: title, body: body);
+
+    setState(() => _posts.add(newPost));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +44,8 @@ class _PostScreenState extends State<PostScreen> {
       body: _PostList(posts: _posts),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        tooltip: 'Increment',
-        onPressed: () {},
+        tooltip: 'Add Post',
+        onPressed: _addPost,
       ),
       bottomNavigationBar: BottomNavigation(),
     );
