@@ -37,41 +37,47 @@ class _PostScreenState extends State<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Posts'),
-      ),
-      body: _PostList(posts: _posts),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        tooltip: 'Add Post',
-        onPressed: _addPost,
-      ),
-      bottomNavigationBar: BottomNavigation(),
-    );
+    return _PostList(posts: _posts, createPost: _addPost);
   }
 }
 
 class _PostList extends StatelessWidget {
   final List<Post> _posts;
-  _PostList({List<dynamic> posts}) : _posts = posts;
+  final Function createPost;
+
+  _PostList({
+    @required List<dynamic> posts,
+    @required this.createPost,
+  }) : _posts = posts;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _posts.length * 2,
-      itemBuilder: (BuildContext context, int i) {
-        if (i.isOdd) {
-          return Divider();
-        }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Posts'),
+      ),
+      body: ListView.builder(
+        itemCount: _posts.length * 2,
+        itemBuilder: (BuildContext context, int i) {
+          if (i.isOdd) {
+            return Divider();
+          }
 
-        final int index = i ~/ 2;
+          final int index = i ~/ 2;
 
-        return ListTile(
-          title: Text(_posts[index].title),
-          subtitle: Text(_posts[index].body),
-        );
-      },
+          return ListTile(
+            title: Text(_posts[index].title),
+            subtitle: Text(_posts[index].body),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        tooltip: 'Add Post',
+        onPressed: createPost,
+        // onPressed: _addPost,
+      ),
+      bottomNavigationBar: BottomNavigation(),
     );
   }
 }
