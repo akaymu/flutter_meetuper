@@ -37,27 +37,40 @@ class _PostScreenState extends State<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _PostList(posts: _posts, createPost: _addPost);
+    return _InheritedPost(
+      posts: _posts,
+      createPost: _addPost,
+      child: _PostList(),
+    );
   }
 }
 
-class _PostList extends StatelessWidget {
-  final List<Post> _posts;
+class _InheritedPost extends InheritedWidget {
+  final Widget child;
+  final List<Post> posts;
   final Function createPost;
 
-  _PostList({
-    @required List<dynamic> posts,
+  _InheritedPost({
+    @required this.child,
+    @required this.posts,
     @required this.createPost,
-  }) : _posts = posts;
+  }) : super(child: child);
 
   @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) => true;
+}
+
+class _PostList extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
+    final posts =
+        context.dependOnInheritedWidgetOfExactType<_InheritedPost>().posts;
     return Scaffold(
       appBar: AppBar(
         title: Text('Posts'),
       ),
       body: ListView.builder(
-        itemCount: _posts.length * 2,
+        itemCount: posts.length * 2,
         itemBuilder: (BuildContext context, int i) {
           if (i.isOdd) {
             return Divider();
@@ -66,18 +79,24 @@ class _PostList extends StatelessWidget {
           final int index = i ~/ 2;
 
           return ListTile(
-            title: Text(_posts[index].title),
-            subtitle: Text(_posts[index].body),
+            title: Text(posts[index].title),
+            subtitle: Text(posts[index].body),
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        tooltip: 'Add Post',
-        onPressed: createPost,
-        // onPressed: _addPost,
-      ),
+      floatingActionButton: _PostButton(),
       bottomNavigationBar: BottomNavigation(),
+    );
+  }
+}
+
+class _PostButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      tooltip: 'Add Post',
+      onPressed: () {},
     );
   }
 }
