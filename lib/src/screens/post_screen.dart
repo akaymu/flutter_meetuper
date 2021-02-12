@@ -58,13 +58,17 @@ class _InheritedPost extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => true;
+
+  static _InheritedPost of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_InheritedPost>();
+  }
 }
 
 class _PostList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final posts =
-        context.dependOnInheritedWidgetOfExactType<_InheritedPost>().posts;
+    final posts = _InheritedPost.of(context).posts;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Posts'),
@@ -96,7 +100,7 @@ class _PostButton extends StatelessWidget {
     return FloatingActionButton(
       child: Icon(Icons.add),
       tooltip: 'Add Post',
-      onPressed: () {},
+      onPressed: _InheritedPost.of(context).createPost,
     );
   }
 }
