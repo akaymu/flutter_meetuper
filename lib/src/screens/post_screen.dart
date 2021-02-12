@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
+import 'package:flutter_meetuper/src/state/app_state.dart';
 
 import '../models/post.dart';
 import '../services/post_api_provider.dart';
@@ -68,10 +69,11 @@ class _PostList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final posts = _InheritedPost.of(context).posts;
+    final testingData = AppStore.of(context).testingData2;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Posts'),
+        title: Text(testingData),
       ),
       body: ListView.builder(
         itemCount: posts.length * 2,
