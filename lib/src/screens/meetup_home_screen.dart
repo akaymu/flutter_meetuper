@@ -12,9 +12,8 @@ class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
       appBar: AppBar(title: Text('Home')),
       body: Column(
         children: <Widget>[
-          MeetupCard(),
-          MeetupCard(),
-          MeetupCard(),
+          _MeetupTitle(),
+          _MeetupList(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -25,7 +24,24 @@ class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
   }
 }
 
-class MeetupCard extends StatelessWidget {
+class _MeetupTitle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.all(20.0),
+      child: Text(
+        'Featured Meetup',
+        style: const TextStyle(
+          fontSize: 22.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+class _MeetupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -53,6 +69,37 @@ class MeetupCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _MeetupList extends StatelessWidget {
+  final List<_MeetupCard> meetupCardList = [
+    _MeetupCard(),
+    _MeetupCard(),
+    _MeetupCard(),
+    _MeetupCard(),
+    _MeetupCard(),
+    _MeetupCard(),
+    _MeetupCard(),
+    _MeetupCard(),
+    _MeetupCard(),
+    _MeetupCard(),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: meetupCardList.length * 2,
+        itemBuilder: (BuildContext context, int i) {
+          if (i.isOdd) {
+            return Divider();
+          }
+          final int index = i ~/ 2;
+
+          return meetupCardList[index];
+        },
       ),
     );
   }
