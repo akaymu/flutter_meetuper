@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../widgets/bottom_navigation.dart';
 
 class MeetupDetailScreen extends StatelessWidget {
-  static final String route = '/meetupDetail';
+  static const String route = '/meetupDetail';
+
+  final String meetupId;
+  MeetupDetailScreen({@required this.meetupId});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +15,7 @@ class MeetupDetailScreen extends StatelessWidget {
         title: Text('Meetup Detail'),
       ),
       body: Center(
-        child: Text('I am Meetup Detail Screen'),
+        child: Text(meetupId),
       ),
       bottomNavigationBar: BottomNavigation(),
     );

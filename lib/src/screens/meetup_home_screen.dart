@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_meetuper/src/models/meetup.dart';
-import 'package:flutter_meetuper/src/services/meetup_api_service.dart';
+import '../models/meetup.dart';
+import '../services/meetup_api_service.dart';
+import 'meetup_detail_screen.dart';
+
+class MeetupDetailArguments {
+  final String id;
+  MeetupDetailArguments({this.id});
+}
 
 class MeetupHomeScreen extends StatefulWidget {
+  // Navigation route name
+  static const String route = '/';
+
   final MeetupApiService _meetupApiService = MeetupApiService();
 
   @override
@@ -82,7 +91,13 @@ class _MeetupCard extends StatelessWidget {
             children: <Widget>[
               FlatButton(
                 child: Text('Visit Meetup'),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    MeetupDetailScreen.route,
+                    arguments: MeetupDetailArguments(id: meetup.id),
+                  );
+                },
               ),
               FlatButton(
                 onPressed: () {},
