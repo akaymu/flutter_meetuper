@@ -1,11 +1,31 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_meetuper/src/models/meetup.dart';
+import 'package:flutter_meetuper/src/services/meetup_api_service.dart';
+
 class MeetupHomeScreen extends StatefulWidget {
+  final MeetupApiService _meetupApiService = MeetupApiService();
+
   @override
   _MeetupHomeScreenState createState() => _MeetupHomeScreenState();
 }
 
 class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
+  List<Meetup> meetups = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchMeetups();
+  }
+
+  void _fetchMeetups() async {
+    final List<Meetup> meetupList =
+        await widget._meetupApiService.fetchMeetups();
+
+    setState(() => this.meetups = meetupList);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +33,7 @@ class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
       body: Column(
         children: <Widget>[
           _MeetupTitle(),
-          _MeetupList(),
+          _MeetupList(meetups: meetups),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -42,6 +62,9 @@ class _MeetupTitle extends StatelessWidget {
 }
 
 class _MeetupCard extends StatelessWidget {
+  final Meetup meetup;
+  _MeetupCard({@required this.meetup});
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -50,11 +73,10 @@ class _MeetupCard extends StatelessWidget {
         children: <Widget>[
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'https://images.unsplash.com/photo-1512136146408-dab5f2ba8ebb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1567&q=80'),
+              backgroundImage: NetworkImage(meetup.image),
             ),
-            title: Text('Meetup in New York'),
-            subtitle: Text('Just some meetup description'),
+            title: Text(meetup.title),
+            subtitle: Text(meetup.description),
           ),
           ButtonBar(
             children: <Widget>[
@@ -75,30 +97,22 @@ class _MeetupCard extends StatelessWidget {
 }
 
 class _MeetupList extends StatelessWidget {
-  final List<_MeetupCard> meetupCardList = [
-    _MeetupCard(),
-    _MeetupCard(),
-    _MeetupCard(),
-    _MeetupCard(),
-    _MeetupCard(),
-    _MeetupCard(),
-    _MeetupCard(),
-    _MeetupCard(),
-    _MeetupCard(),
-    _MeetupCard(),
-  ];
+  final List<Meetup> meetups;
+
+  _MeetupList({@required this.meetups});
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
-        itemCount: meetupCardList.length * 2,
+        itemCount: meetups.length * 2,
         itemBuilder: (BuildContext context, int i) {
           if (i.isOdd) {
             return Divider();
           }
           final int index = i ~/ 2;
 
-          return meetupCardList[index];
+          return _MeetupCard(meetup: meetups[index]);
         },
       ),
     );
