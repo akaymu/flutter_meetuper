@@ -41,10 +41,60 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
               children: <Widget>[
                 HeaderSection(meetup: meetup),
                 TitleSection(meetup: meetup),
+                AdditionalInfoSection(meetup: meetup),
               ],
             )
           : Container(width: 0, height: 0),
       bottomNavigationBar: BottomNavigation(),
+    );
+  }
+}
+
+class AdditionalInfoSection extends StatelessWidget {
+  final Meetup meetup;
+  AdditionalInfoSection({@required this.meetup});
+
+  String _capitalize(String word) {
+    if (word == null || word.isEmpty) {
+      return '';
+    }
+
+    return word[0].toUpperCase() + word.substring(1);
+  }
+
+  Column _buildColumn(String label, String text, Color color) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 13.0,
+            fontWeight: FontWeight.w400,
+            color: color,
+          ),
+        ),
+        Text(
+          _capitalize(text),
+          style: TextStyle(
+            fontSize: 25.0,
+            fontWeight: FontWeight.w500,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Color color = Theme.of(context).primaryColor;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildColumn('CATEGORY', meetup.category.name, color),
+        _buildColumn('FROM', meetup.timeFrom, color),
+        _buildColumn('TO', meetup.timeTo, color),
+      ],
     );
   }
 }
@@ -76,7 +126,7 @@ class TitleSection extends StatelessWidget {
           ),
           Icon(
             Icons.people,
-            color: Colors.blue[500],
+            color: Theme.of(context).primaryColor,
           ),
           SizedBox(width: 5.0),
           Text('${meetup.joinedPeopleCount} People'),
