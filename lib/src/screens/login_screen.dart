@@ -24,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   LoginFormData _loginData = LoginFormData();
   AutovalidateMode _autoValidateMode = AutovalidateMode.disabled;
+  BuildContext _scaffoldContext;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -40,24 +41,24 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _login() {
+    widget.authApi.login(_loginData).then((data) {
+      Navigator.pushNamed(context, MeetupHomeScreen.route);
+    }).catchError((res) {
+      Scaffold.of(_scaffoldContext).showSnackBar(
+        SnackBar(
+          content: Text(res['errors']['message']),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    });
+  }
+
   void _submit() {
     final form = _formKey.currentState;
     if (form.validate()) {
-      // final String password = _passwordController.text;
-      // final String email = _emailController.text;
-      // // final String email = _emailKey.currentState.value;
-
       form.save(); // Triggers onSaved functions
-
-      widget.authApi
-          .login(_loginData)
-          .then((data) => print(data))
-          .catchError((err) {
-        print(err);
-      });
-
-      print(
-          'Email is ${_loginData.email} and password is ${_loginData.password}');
+      _login();
     } else {
       setState(() => _autoValidateMode = AutovalidateMode.onUserInteraction);
     }
@@ -67,69 +68,73 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Login')),
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          // HERE is important
-          autovalidateMode: _autoValidateMode,
-          // Column u ListView'e değiştirdik çünkü scrollable olsun ve
-          // Landscape mode'da patlamasın diye
-          child: ListView(
-            children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 15.0),
-                child: Text(
-                  'Login And Explore',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
+      body: Builder(
+        builder: (BuildContext context) {
+          _scaffoldContext = context;
+          return Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              // HERE is important
+              autovalidateMode: _autoValidateMode,
+              // Column u ListView'e değiştirdik çünkü scrollable olsun ve
+              // Landscape mode'da patlamasın diye
+              child: ListView(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 15.0),
+                    child: Text(
+                      'Login And Explore',
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
+                  TextFormField(
+                    key: _emailKey,
+                    onSaved: (value) => _loginData.email = value,
+                    style: Theme.of(context).textTheme.headline6,
+                    decoration: InputDecoration(hintText: 'Email Address'),
+                    validator: composeValidators(
+                      'email',
+                      [
+                        requiredValidator,
+                        minLengthValidator,
+                        emailValidator,
+                      ],
+                    ),
+                  ),
+                  TextFormField(
+                    key: _passwordKey,
+                    obscureText: true,
+                    onSaved: (value) => _loginData.password = value,
+                    style: Theme.of(context).textTheme.headline6,
+                    decoration: InputDecoration(hintText: 'Password'),
+                    validator: composeValidators(
+                      'password',
+                      [
+                        requiredValidator,
+                        minLengthValidator,
+                      ],
+                    ),
+                  ),
+                  _buildLinks(),
+                  Container(
+                    alignment: Alignment(-1.0, 0.0),
+                    margin: EdgeInsets.only(top: 10.0),
+                    child: RaisedButton(
+                      textColor: Colors.white,
+                      color: Theme.of(context).primaryColor,
+                      child: const Text('Submit'),
+                      onPressed: _submit,
+                    ),
+                  ),
+                ],
               ),
-              TextFormField(
-                key: _emailKey,
-                // controller: _emailController,
-                onSaved: (value) => _loginData.email = value,
-                style: Theme.of(context).textTheme.headline6,
-                decoration: InputDecoration(hintText: 'Email Address'),
-                validator: composeValidators(
-                  'email',
-                  [
-                    requiredValidator,
-                    minLengthValidator,
-                    emailValidator,
-                  ],
-                ),
-              ),
-              TextFormField(
-                key: _passwordKey,
-                // controller: _passwordController,
-                onSaved: (value) => _loginData.password = value,
-                style: Theme.of(context).textTheme.headline6,
-                decoration: InputDecoration(hintText: 'Password'),
-                validator: composeValidators(
-                  'password',
-                  [
-                    requiredValidator,
-                    minLengthValidator,
-                  ],
-                ),
-              ),
-              _buildLinks(),
-              Container(
-                alignment: Alignment(-1.0, 0.0),
-                margin: EdgeInsets.only(top: 10.0),
-                child: RaisedButton(
-                  textColor: Colors.white,
-                  color: Theme.of(context).primaryColor,
-                  child: const Text('Submit'),
-                  onPressed: _submit,
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
