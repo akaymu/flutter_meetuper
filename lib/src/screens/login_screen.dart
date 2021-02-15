@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
       GlobalKey<FormFieldState<String>>();
 
   LoginFormData _loginData = LoginFormData();
+  AutovalidateMode _autoValidateMode = AutovalidateMode.disabled;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -47,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       print(
           'Email is ${_loginData.email} and password is ${_loginData.password}');
+    } else {
+      setState(() => _autoValidateMode = AutovalidateMode.onUserInteraction);
     }
   }
 
@@ -58,6 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
+          // HERE is important
+          autovalidateMode: _autoValidateMode,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -77,6 +82,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSaved: (value) => _loginData.email = value,
                 style: Theme.of(context).textTheme.headline6,
                 decoration: InputDecoration(hintText: 'Email Address'),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter an email!';
+                  }
+
+                  if (value.length < 8) {
+                    return 'Minimum length of email is 8 characters!';
+                  }
+
+                  return null;
+                },
               ),
               TextFormField(
                 key: _passwordKey,
@@ -84,6 +100,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSaved: (value) => _loginData.password = value,
                 style: Theme.of(context).textTheme.headline6,
                 decoration: InputDecoration(hintText: 'Password'),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter a password!';
+                  }
+
+                  if (value.length < 8) {
+                    return 'Minimum length of password is 8 characters!';
+                  }
+
+                  return null;
+                },
               ),
               _buildLinks(),
               Container(
