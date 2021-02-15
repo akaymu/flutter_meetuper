@@ -85,17 +85,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSaved: (value) => _loginData.email = value,
                 style: Theme.of(context).textTheme.headline6,
                 decoration: InputDecoration(hintText: 'Email Address'),
-                validator: (value) {
-                  return composeValidators(
-                    value,
-                    'email',
-                    [
-                      requiredValidator,
-                      minLengthValidator,
-                      emailValidator,
-                    ],
-                  );
-                },
+                validator: composeValidators(
+                  'email',
+                  [
+                    requiredValidator,
+                    minLengthValidator,
+                    emailValidator,
+                  ],
+                ),
               ),
               TextFormField(
                 key: _passwordKey,
@@ -103,16 +100,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSaved: (value) => _loginData.password = value,
                 style: Theme.of(context).textTheme.headline6,
                 decoration: InputDecoration(hintText: 'Password'),
-                validator: (value) {
-                  return composeValidators(
-                    value,
-                    'password',
-                    [
-                      requiredValidator,
-                      minLengthValidator,
-                    ],
-                  );
-                },
+                validator: composeValidators(
+                  'password',
+                  [
+                    requiredValidator,
+                    minLengthValidator,
+                  ],
+                ),
               ),
               _buildLinks(),
               Container(
