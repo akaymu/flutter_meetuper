@@ -19,7 +19,8 @@ String minLengthValidator(String value, String field) {
   return null;
 }
 
-Function(String) composeValidators(
+// String alıp String dönen bir Fonksiyon dönecektir demek!
+String Function(String) composeValidators(
   String field,
   List<Function> validators,
 ) {
