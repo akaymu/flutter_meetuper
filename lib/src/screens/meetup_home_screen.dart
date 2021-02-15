@@ -11,7 +11,8 @@ class MeetupDetailArguments {
 
 class MeetupHomeScreen extends StatefulWidget {
   // Navigation route name
-  static const String route = '/';
+  static const String route = '/home';
+  // static const String route = '/';
 
   final MeetupApiService _meetupApiService = MeetupApiService();
 

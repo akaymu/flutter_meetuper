@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'src/screens/login_screen.dart';
 import 'src/screens/meetup_detail_screen.dart';
 import 'src/screens/meetup_home_screen.dart';
+import 'src/screens/register_screen.dart';
 
 void main() {
   runApp(MeetuperApp());
@@ -30,6 +32,22 @@ class MeetuperApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (BuildContext context) {
                 return MeetupDetailScreen(meetupId: arguments.id);
+              },
+            );
+            break;
+
+          case RegisterScreen.route:
+            return MaterialPageRoute(
+              builder: (BuildContext context) {
+                return RegisterScreen();
+              },
+            );
+            break;
+
+          case LoginScreen.route:
+            return MaterialPageRoute(
+              builder: (BuildContext context) {
+                return LoginScreen();
               },
             );
             break;
