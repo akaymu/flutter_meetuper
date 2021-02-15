@@ -58,23 +58,29 @@ class _MeetupTitle extends StatelessWidget {
   final AuthApiService authApiService = AuthApiService();
 
   Widget _buildUserWelcome() {
-    if (authApiService.isAuthenticated()) {
-      final user = authApiService.authUser;
-      return Container(
-        margin: EdgeInsets.only(top: 10.0),
-        child: Row(
-          children: [
-            // List içinde ternary operation kullanırken null kullanamazsın.
-            // Bu sebeple aşağıdaki gibi süslü parantezsiz if kullanabilirsin.
-            if (user.avatar != null)
-              CircleAvatar(backgroundImage: NetworkImage(user.avatar)),
-            Text('Welcome ${user.username}'),
-          ],
-        ),
-      );
-    } else {
-      return Container(width: 0, height: 0);
-    }
+    return FutureBuilder<bool>(
+      initialData: false,
+      future: authApiService.isAuthenticated(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData && snapshot.data) {
+          final user = authApiService.authUser;
+          return Container(
+            margin: EdgeInsets.only(top: 10.0),
+            child: Row(
+              children: [
+                // List içinde ternary operation kullanırken null kullanamazsın.
+                // Bu sebeple aşağıdaki gibi süslü parantezsiz if kullanabilirsin.
+                if (user.avatar != null)
+                  CircleAvatar(backgroundImage: NetworkImage(user.avatar)),
+                Text('Welcome ${user.username}'),
+              ],
+            ),
+          );
+        } else {
+          return Container(width: 0, height: 0);
+        }
+      },
+    );
   }
 
   @override

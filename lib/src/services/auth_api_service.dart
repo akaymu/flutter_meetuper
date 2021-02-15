@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 
+import 'package:flutter_meetuper/src/utils/jwt.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/forms.dart';
 import '../models/user.dart';
@@ -28,8 +30,23 @@ class AuthApiService {
 
   get authUser => _authUser;
 
-  bool _saveToken(String token) {
+  Future<String> get token async {
+    if (_token.isNotEmpty) {
+      return _token;
+    } else {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+  }
+
+  Future<bool> _persistToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('token', token);
+  }
+
+  Future<bool> _saveToken(String token) async {
     if (token != null) {
+      await _persistToken(token);
       _token = token;
       return true;
     }
@@ -37,8 +54,11 @@ class AuthApiService {
     return false;
   }
 
-  bool isAuthenticated() {
-    if (_token.isNotEmpty) {
+  Future<bool> isAuthenticated() async {
+    final token = await this.token;
+    if (token.isNotEmpty) {
+      final decodedToken = decode(token);
+      authUser = decodedToken; // Setting _authUser with setter function
       return true;
     }
     return false;
