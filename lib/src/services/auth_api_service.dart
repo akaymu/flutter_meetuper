@@ -17,10 +17,18 @@ class AuthApiService {
   factory AuthApiService() => _singleton;
 
   Future<Map<String, dynamic>> login(LoginFormData loginData) async {
-    final body = json.encode(loginData);
-    final res = await http.post('$url/users/login', body: body);
+    final body = json.encode(loginData.toJson());
+    final res = await http.post(
+      '$url/users/login',
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    final parsedData = Map<String, dynamic>.from(json.decode(res.body));
 
-    final parsedData = json.decode(res.body);
-    return parsedData;
+    if (res.statusCode == 200) {
+      return parsedData;
+    } else {
+      return Future.error(parsedData);
+    }
   }
 }

@@ -49,7 +49,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       form.save(); // Triggers onSaved functions
 
-      widget.authApi.login(_loginData).then((data) => print(data));
+      widget.authApi
+          .login(_loginData)
+          .then((data) => print(data))
+          .catchError((err) {
+        print(err);
+      });
 
       print(
           'Email is ${_loginData.email} and password is ${_loginData.password}');
