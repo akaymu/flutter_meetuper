@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_meetuper/src/screens/meetup_home_screen.dart';
-import 'package:flutter_meetuper/src/screens/register_screen.dart';
+
 import '../models/forms.dart';
+import '../utils/validators.dart';
+import 'meetup_home_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String route = '/login';
@@ -63,8 +65,9 @@ class _LoginScreenState extends State<LoginScreen> {
           key: _formKey,
           // HERE is important
           autovalidateMode: _autoValidateMode,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          // Column u ListView'e değiştirdik çünkü scrollable olsun ve
+          // Landscape mode'da patlamasın diye
+          child: ListView(
             children: [
               Container(
                 margin: EdgeInsets.only(bottom: 15.0),
@@ -83,15 +86,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: Theme.of(context).textTheme.headline6,
                 decoration: InputDecoration(hintText: 'Email Address'),
                 validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter an email!';
-                  }
-
-                  if (value.length < 8) {
-                    return 'Minimum length of email is 8 characters!';
-                  }
-
-                  return null;
+                  return composeValidators(
+                    value,
+                    'email',
+                    [
+                      requiredValidator,
+                      minLengthValidator,
+                      emailValidator,
+                    ],
+                  );
                 },
               ),
               TextFormField(
@@ -101,15 +104,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: Theme.of(context).textTheme.headline6,
                 decoration: InputDecoration(hintText: 'Password'),
                 validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter a password!';
-                  }
-
-                  if (value.length < 8) {
-                    return 'Minimum length of password is 8 characters!';
-                  }
-
-                  return null;
+                  return composeValidators(
+                    value,
+                    'password',
+                    [
+                      requiredValidator,
+                      minLengthValidator,
+                    ],
+                  );
                 },
               ),
               _buildLinks(),
