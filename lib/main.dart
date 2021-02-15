@@ -17,9 +17,10 @@ class MeetuperApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
+      initialRoute: LoginScreen.route,
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
-          case MeetupHomeScreen.route: // RouteName '/'
+          case MeetupHomeScreen.route:
             return MaterialPageRoute(
               builder: (BuildContext context) {
                 return MeetupHomeScreen();
@@ -27,7 +28,7 @@ class MeetuperApp extends StatelessWidget {
             );
             break;
 
-          case MeetupDetailScreen.route: // RouteName '/meetupDetail'
+          case MeetupDetailScreen.route:
             final MeetupDetailArguments arguments = settings.arguments;
             return MaterialPageRoute(
               builder: (BuildContext context) {
