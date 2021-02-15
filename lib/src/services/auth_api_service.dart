@@ -11,7 +11,7 @@ class AuthApiService {
       ? 'http://localhost:3001/api/v1'
       : 'http://10.0.2.2:3001/api/v1';
 
-  String _token;
+  String _token = '';
   User _authUser;
 
   // Private Constructor
@@ -26,12 +26,21 @@ class AuthApiService {
     _authUser = User.fromJson(value);
   }
 
+  get authUser => _authUser;
+
   bool _saveToken(String token) {
     if (token != null) {
       _token = token;
       return true;
     }
 
+    return false;
+  }
+
+  bool isAuthenticated() {
+    if (_token.isNotEmpty) {
+      return true;
+    }
     return false;
   }
 
@@ -47,10 +56,6 @@ class AuthApiService {
     if (res.statusCode == 200) {
       _saveToken(parsedData['token']);
       authUser = parsedData; // Setting _authUser with setter function
-      print(_authUser);
-      print(_authUser.name);
-      print(_authUser.username);
-      print(_authUser.email);
       return parsedData;
     } else {
       return Future.error(parsedData);

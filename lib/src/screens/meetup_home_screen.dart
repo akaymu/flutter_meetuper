@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/meetup.dart';
+import '../services/auth_api_service.dart';
 import '../services/meetup_api_service.dart';
 import 'meetup_detail_screen.dart';
 
@@ -54,17 +55,45 @@ class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
 }
 
 class _MeetupTitle extends StatelessWidget {
+  final AuthApiService authApiService = AuthApiService();
+
+  Widget _buildUserWelcome() {
+    if (authApiService.isAuthenticated()) {
+      final user = authApiService.authUser;
+      return Container(
+        margin: EdgeInsets.only(top: 10.0),
+        child: Row(
+          children: [
+            // List içinde ternary operation kullanırken null kullanamazsın.
+            // Bu sebeple aşağıdaki gibi süslü parantezsiz if kullanabilirsin.
+            if (user.avatar != null)
+              CircleAvatar(backgroundImage: NetworkImage(user.avatar)),
+            Text('Welcome ${user.username}'),
+          ],
+        ),
+      );
+    } else {
+      return Container(width: 0, height: 0);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerLeft,
       padding: EdgeInsets.all(20.0),
-      child: Text(
-        'Featured Meetup',
-        style: const TextStyle(
-          fontSize: 22.0,
-          fontWeight: FontWeight.bold,
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Featured Meetups',
+            style: const TextStyle(
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          _buildUserWelcome(),
+        ],
       ),
     );
   }
