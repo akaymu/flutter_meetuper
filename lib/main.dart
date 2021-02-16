@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/models/arguments.dart';
 
 import 'src/screens/login_screen.dart';
 import 'src/screens/meetup_detail_screen.dart';
@@ -46,9 +47,10 @@ class MeetuperApp extends StatelessWidget {
             break;
 
           case LoginScreen.route:
+            final LoginScreenArguments arguments = settings.arguments;
             return MaterialPageRoute(
               builder: (BuildContext context) {
-                return LoginScreen();
+                return LoginScreen(message: arguments?.message);
               },
             );
             break;

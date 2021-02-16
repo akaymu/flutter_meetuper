@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/models/arguments.dart';
 import 'package:flutter_meetuper/src/services/auth_api_service.dart';
 
 import '../models/forms.dart';
@@ -16,16 +17,28 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   RegisterFormData _registerData = RegisterFormData();
+  BuildContext _scaffoldContext;
 
   void _handleSuccess(data) {
-    print('Yeey!!');
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      LoginScreen.route,
+      (Route<dynamic> route) => false,
+      arguments: LoginScreenArguments(
+          'You have been successfully registered. Feel free to login now.'),
+    );
   }
 
-  void _handleError(error) {
-    print(error);
+  void _handleError(res) {
+    Scaffold.of(_scaffoldContext).showSnackBar(
+      SnackBar(
+        content: Text(res['errors']['message']),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
   }
 
   void _register() {
@@ -52,6 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(title: Text('Register')),
       body: Builder(
         builder: (BuildContext context) {
+          _scaffoldContext = context;
           return Padding(
             padding: EdgeInsets.all(20.0),
             child: Form(

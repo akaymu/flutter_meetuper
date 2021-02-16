@@ -9,6 +9,9 @@ import 'register_screen.dart';
 class LoginScreen extends StatefulWidget {
   static const String route = '/login';
 
+  final String message;
+  LoginScreen({this.message});
+
   final authApi = AuthApiService();
 
   @override
@@ -29,16 +32,31 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
+
+    // NOT: initState, build fonksiyonundan önce çalıştığı için
+    // _scaffoldContext null olarak gelmektedir. Bu sebeple
+    // _checkForMessageAndShowIfExists içindeki _scaffoldContext
+    // hataya sebep olur. Çözüm: WidgetsBinding kullanmaktır.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkForMessageAndShowIfExists();
+    });
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _checkForMessageAndShowIfExists() {
+    if (widget.message != null && widget.message.isNotEmpty) {
+      Scaffold.of(_scaffoldContext)
+          .showSnackBar(SnackBar(content: Text(widget.message)));
+    }
   }
 
   void _login() {
