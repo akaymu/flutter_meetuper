@@ -32,6 +32,13 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    _counterController.close();
+    _streamController.close();
+    super.dispose();
+  }
+
   _increment() {
     _streamController.sink.add(10);
   }
@@ -53,7 +60,6 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
             ),
             StreamBuilder<int>(
               stream: _counterController.stream,
-              initialData: _counter,
               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                 if (snapshot.hasData) {
                   return Text(
