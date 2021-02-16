@@ -72,7 +72,11 @@ class _MeetupTitle extends StatelessWidget {
                 // List içinde ternary operation kullanırken null kullanamazsın.
                 // Bu sebeple aşağıdaki gibi süslü parantezsiz if kullanabilirsin.
                 if (user.avatar != null)
-                  CircleAvatar(backgroundImage: NetworkImage(user.avatar)),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: CircleAvatar(
+                        backgroundImage: NetworkImage(user.avatar)),
+                  ),
                 Text('Welcome ${user.username}'),
                 Spacer(), // Olabildiğince büyük yer kaplar...
                 GestureDetector(

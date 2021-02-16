@@ -15,7 +15,7 @@ class RegisterFormData {
   String passwordConfirmation = '';
   String avatar = '';
 
-  Map<String, dynamic> toJSON() => {
+  Map<String, dynamic> toJson() => {
         'email': email,
         'username': username,
         'name': name,

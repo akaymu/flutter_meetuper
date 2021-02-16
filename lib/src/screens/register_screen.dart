@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/services/auth_api_service.dart';
 
 import '../models/forms.dart';
 import '../utils/validators.dart';
@@ -7,6 +8,7 @@ import 'meetup_home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const String route = '/register';
+  final AuthApiService authApiService = AuthApiService();
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -18,12 +20,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   RegisterFormData _registerData = RegisterFormData();
 
+  void _handleSuccess(data) {
+    print('Yeey!!');
+  }
+
+  void _handleError(error) {
+    print(error);
+  }
+
   void _register() {
+    widget.authApiService
+        .register(_registerData)
+        .then(_handleSuccess)
+        .catchError(_handleError);
+  }
+
+  void _submit() {
     final form = _formKey.currentState;
 
     if (form.validate()) {
       form.save();
-      print(_registerData.toJSON());
+      _register();
     } else {
       setState(() => _autovalidateMode = AutovalidateMode.onUserInteraction);
     }
@@ -166,9 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         textColor: Colors.white,
         color: Theme.of(context).primaryColor,
         child: const Text('Submit'),
-        onPressed: () {
-          _register();
-        },
+        onPressed: _submit,
       ),
     );
   }

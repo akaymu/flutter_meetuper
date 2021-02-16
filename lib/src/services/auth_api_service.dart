@@ -77,9 +77,25 @@ class AuthApiService {
     final parsedData = Map<String, dynamic>.from(json.decode(res.body));
 
     if (res.statusCode == 200) {
-      _saveToken(parsedData['token']);
+      await _saveToken(parsedData['token']);
       authUser = parsedData; // Setting _authUser with setter function
       return parsedData;
+    } else {
+      return Future.error(parsedData);
+    }
+  }
+
+  Future<bool> register(RegisterFormData registerData) async {
+    final body = json.encode(registerData.toJson());
+    final res = await http.post(
+      '$url/users/register',
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    final parsedData = Map<String, dynamic>.from(json.decode(res.body));
+
+    if (res.statusCode == 200) {
+      return true;
     } else {
       return Future.error(parsedData);
     }
