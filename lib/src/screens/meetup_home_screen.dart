@@ -26,11 +26,7 @@ class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final meetupBloc = BlocProvider.of<MeetupBloc>(context);
-    meetupBloc.fetchMeetups();
-    meetupBloc.meetups.listen((data) {
-      print(data);
-    });
+    BlocProvider.of<MeetupBloc>(context).fetchMeetups();
   }
 
   @override

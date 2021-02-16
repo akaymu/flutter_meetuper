@@ -40,7 +40,10 @@ class MeetuperApp extends StatelessWidget {
             final MeetupDetailArguments arguments = settings.arguments;
             return MaterialPageRoute(
               builder: (BuildContext context) {
-                return MeetupDetailScreen(meetupId: arguments.id);
+                return BlocProvider<MeetupBloc>(
+                  child: MeetupDetailScreen(meetupId: arguments.id),
+                  bloc: MeetupBloc(),
+                );
               },
             );
             break;

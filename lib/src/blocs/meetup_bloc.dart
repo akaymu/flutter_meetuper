@@ -8,19 +8,28 @@ class MeetupBloc implements BlocBase {
   final MeetupApiService _api = MeetupApiService();
 
   final StreamController<List<Meetup>> _meetupController =
-      StreamController<List<Meetup>>.broadcast();
-
-  // Getters
+      StreamController.broadcast();
   Stream<List<Meetup>> get meetups => _meetupController.stream;
   StreamSink<List<Meetup>> get _inMeetups => _meetupController.sink;
+
+  final StreamController<Meetup> _meetupDetailController =
+      StreamController.broadcast();
+  Stream<Meetup> get meetupDetail => _meetupDetailController.stream;
+  StreamSink<Meetup> get _inMeetupDetail => _meetupDetailController.sink;
 
   void fetchMeetups() async {
     final List<Meetup> meetups = await _api.fetchMeetups();
     _inMeetups.add(meetups);
   }
 
+  void fetchMeetupDetail(String meetupId) async {
+    final meetup = await _api.fetchMeetupById(meetupId);
+    _inMeetupDetail.add(meetup);
+  }
+
   @override
   void dispose() {
     _meetupController.close();
+    _meetupDetailController.close();
   }
 }
