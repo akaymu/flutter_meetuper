@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/services/auth_api_service.dart';
 
 import '../blocs/bloc_provider.dart';
 import '../blocs/meetup_bloc.dart';
@@ -49,6 +50,42 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavigation(),
+      floatingActionButton: _MeetupActionButton(),
+    );
+  }
+}
+
+class _MeetupActionButton extends StatelessWidget {
+  final AuthApiService auth = AuthApiService();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: auth.isAuthenticated(),
+      builder: (BuildContext buildContext, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData && snapshot.data) {
+          // TODO: Check if user is meetup owner
+          // TODO: Check if user is already member
+          final bool isMember = true;
+          if (isMember) {
+            return FloatingActionButton(
+              onPressed: () {},
+              child: Icon(Icons.person_remove),
+              backgroundColor: Colors.red,
+              tooltip: 'Leave Meetup',
+            );
+          } else {
+            return FloatingActionButton(
+              onPressed: () {},
+              child: Icon(Icons.person_add),
+              backgroundColor: Colors.green,
+              tooltip: 'Join Meetup',
+            );
+          }
+        } else {
+          return Container(width: 0, height: 0);
+        }
+      },
     );
   }
 }
