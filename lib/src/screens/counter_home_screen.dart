@@ -8,22 +8,31 @@ class CounterHomeScreen extends StatefulWidget {
   static const String route = '/counter';
 
   final String _title;
-  CounterHomeScreen({String title}) : _title = title;
+  CounterBloc bloc;
+  CounterHomeScreen({String title, this.bloc}) : _title = title;
 
   @override
   _CounterHomeScreenState createState() => _CounterHomeScreenState();
 }
 
 class _CounterHomeScreenState extends State<CounterHomeScreen> {
+  // CounterBloc counterBloc;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // counterBloc = CounterBlocProvider.of(context);
+  }
+
   @override
   void dispose() {
-    counterBloc.dispose();
+    widget.bloc.dispose();
     super.dispose();
   }
 
   _increment() {
     // call stream
-    counterBloc.increment(15);
+    widget.bloc.increment(15);
   }
 
   @override
@@ -42,7 +51,7 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
               style: TextStyle(fontSize: 15.0),
             ),
             StreamBuilder<int>(
-              stream: counterBloc.counterStream,
+              stream: widget.bloc.counterStream,
               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                 if (snapshot.hasData) {
                   return Text(
@@ -61,7 +70,7 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
             ),
             RaisedButton(
               child: StreamBuilder<int>(
-                stream: counterBloc.counterStream,
+                stream: widget.bloc.counterStream,
                 initialData: 0,
                 builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                   if (snapshot.hasData) {
