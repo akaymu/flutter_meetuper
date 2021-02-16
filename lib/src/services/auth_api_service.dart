@@ -58,8 +58,11 @@ class AuthApiService {
     final token = await this.token;
     if (token.isNotEmpty) {
       final decodedToken = decode(token);
-      authUser = decodedToken; // Setting _authUser with setter function
-      return true;
+
+      if (decodedToken['exp'] * 1000 > DateTime.now().millisecond) {
+        authUser = decodedToken; // Setting _authUser with setter function
+        return true;
+      }
     }
     return false;
   }
