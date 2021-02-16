@@ -73,6 +73,14 @@ class _MeetupTitle extends StatelessWidget {
                 if (user.avatar != null)
                   CircleAvatar(backgroundImage: NetworkImage(user.avatar)),
                 Text('Welcome ${user.username}'),
+                Spacer(), // Olabildiğince büyük yer kaplar...
+                GestureDetector(
+                  onTap: authApiService.logout,
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
+                ),
               ],
             ),
           );

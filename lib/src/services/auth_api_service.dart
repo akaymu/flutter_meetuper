@@ -84,4 +84,21 @@ class AuthApiService {
       return Future.error(parsedData);
     }
   }
+
+  Future<void> _removeAuthData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    _token = '';
+    _authUser = null;
+  }
+
+  Future<bool> logout() async {
+    try {
+      await _removeAuthData();
+      return true;
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
 }
