@@ -18,39 +18,22 @@ class CounterHomeScreen extends StatefulWidget {
 class _CounterHomeScreenState extends State<CounterHomeScreen> {
   final StreamController<int> _streamController =
       StreamController<int>.broadcast();
-  // final StreamTransformer<int, int> _streamTransformer =
-  //     StreamTransformer<int, int>.fromHandlers(
-  //   handleData: (int data, EventSink<int> sink) {
-  //     print('FROM HANDLE DATA FUNCTION');
-  //     print(data);
-  //     sink.add(data ~/ 2);
-  //   },
-  // );
+  final StreamController<int> _counterController =
+      StreamController<int>.broadcast();
 
   int _counter = 0;
 
   @override
   initState() {
     super.initState();
-    _streamController.stream
-        // .where((data) => data < 15)
-        // .skip(2) // 2 kere işlem yapmadı. sonra başladı.
-        // .map((data) => data * 2)
-        // .map((data) => data - 4)
-        // .map((data) => data * data)
-        // .transform(_streamTransformer)
-        .listen((int number) {
+    _streamController.stream.listen((int number) {
       _counter += number;
-      // print('FROM INITSTATE FUNCTION');
-      print(_counter.toString());
+      _counterController.sink.add(_counter);
     });
   }
 
   _increment() {
     _streamController.sink.add(10);
-    // setState(() {
-    //   _counter++;
-    // });
   }
 
   @override
@@ -68,13 +51,37 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
               textDirection: TextDirection.ltr,
               style: TextStyle(fontSize: 15.0),
             ),
-            Text(
-              'Click Counter: $_counter',
-              textDirection: TextDirection.ltr,
-              style: TextStyle(fontSize: 30.0),
+            StreamBuilder<int>(
+              stream: _counterController.stream,
+              initialData: _counter,
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    'Click Counter: ${snapshot.data}',
+                    textDirection: TextDirection.ltr,
+                    style: TextStyle(fontSize: 30.0),
+                  );
+                } else {
+                  return Text(
+                    'Counter is sad, no data!',
+                    textDirection: TextDirection.ltr,
+                    style: TextStyle(fontSize: 30.0),
+                  );
+                }
+              },
             ),
             RaisedButton(
-              child: Text('Go To Detail'),
+              child: StreamBuilder<int>(
+                stream: _counterController.stream,
+                initialData: _counter,
+                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                  if (snapshot.hasData) {
+                    return Text('Counter - ${snapshot.data}');
+                  } else {
+                    return Text('Counter is sad!');
+                  }
+                },
+              ),
               onPressed: () {
                 Navigator.pushNamed(context, MeetupDetailScreen.route);
               },
