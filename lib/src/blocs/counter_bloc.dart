@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-class CounterBloc {
+import 'bloc_provider.dart';
+
+class CounterBloc extends BlocBase {
   final StreamController<int> _streamController =
       StreamController<int>.broadcast();
   final StreamController<int> _counterController =
@@ -26,6 +28,7 @@ class CounterBloc {
     _streamController.sink.add(incrementer);
   }
 
+  @override
   dispose() {
     _counterController.close();
     _streamController.close();

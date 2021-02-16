@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_meetuper/src/blocs/counter_bloc.dart';
 
+import '../blocs/bloc_provider.dart';
+import '../blocs/counter_bloc.dart';
 import '../widgets/bottom_navigation.dart';
 import 'meetup_detail_screen.dart';
 
@@ -8,17 +9,24 @@ class CounterHomeScreen extends StatefulWidget {
   static const String route = '/counter';
 
   final String _title;
-  CounterBloc bloc;
-  CounterHomeScreen({String title, this.bloc}) : _title = title;
+  CounterHomeScreen({String title}) : _title = title;
 
   @override
   _CounterHomeScreenState createState() => _CounterHomeScreenState();
 }
 
 class _CounterHomeScreenState extends State<CounterHomeScreen> {
+  CounterBloc counterBloc;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    counterBloc = BlocProvider.of<CounterBloc>(context);
+  }
+
   _increment() {
     // call stream
-    widget.bloc.increment(15);
+    counterBloc.increment(15);
   }
 
   @override
@@ -37,7 +45,7 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
               style: TextStyle(fontSize: 15.0),
             ),
             StreamBuilder<int>(
-              stream: widget.bloc.counterStream,
+              stream: counterBloc.counterStream,
               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                 if (snapshot.hasData) {
                   return Text(
@@ -56,7 +64,7 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
             ),
             RaisedButton(
               child: StreamBuilder<int>(
-                stream: widget.bloc.counterStream,
+                stream: counterBloc.counterStream,
                 initialData: 0,
                 builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                   if (snapshot.hasData) {
