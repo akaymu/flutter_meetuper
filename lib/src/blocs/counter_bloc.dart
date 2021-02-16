@@ -32,19 +32,49 @@ class CounterBloc {
   }
 }
 
-class CounterBlocProvider extends InheritedWidget {
+class _CounterBlocProviderInherited extends InheritedWidget {
   final CounterBloc bloc;
 
-  CounterBlocProvider({Widget child, Key key})
-      : bloc = CounterBloc(),
-        super(key: key, child: child);
+  _CounterBlocProviderInherited({
+    @required Widget child,
+    Key key,
+    @required this.bloc,
+  }) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => true;
+}
+
+class CounterBlocProvider extends StatefulWidget {
+  final CounterBloc bloc;
+  final Widget child;
+
+  CounterBlocProvider({Key key, @required this.child})
+      : bloc = CounterBloc(),
+        super(key: key);
+
+  @override
+  _CounterBlocProviderState createState() => _CounterBlocProviderState();
 
   static CounterBloc of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<CounterBlocProvider>()
-        .bloc;
+    _CounterBlocProviderInherited provider = context
+        .dependOnInheritedWidgetOfExactType<_CounterBlocProviderInherited>();
+    return provider.bloc;
+  }
+}
+
+class _CounterBlocProviderState extends State<CounterBlocProvider> {
+  @override
+  void dispose() {
+    widget.bloc.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _CounterBlocProviderInherited(
+      child: widget.child,
+      bloc: widget.bloc,
+    );
   }
 }

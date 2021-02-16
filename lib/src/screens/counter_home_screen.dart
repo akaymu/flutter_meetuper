@@ -16,20 +16,6 @@ class CounterHomeScreen extends StatefulWidget {
 }
 
 class _CounterHomeScreenState extends State<CounterHomeScreen> {
-  // CounterBloc counterBloc;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // counterBloc = CounterBlocProvider.of(context);
-  }
-
-  @override
-  void dispose() {
-    widget.bloc.dispose();
-    super.dispose();
-  }
-
   _increment() {
     // call stream
     widget.bloc.increment(15);
