@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/meetup.dart';
 import '../services/auth_api_service.dart';
 import '../services/meetup_api_service.dart';
+import 'login_screen.dart';
 import 'meetup_detail_screen.dart';
 
 class MeetupDetailArguments {
@@ -75,7 +76,15 @@ class _MeetupTitle extends StatelessWidget {
                 Text('Welcome ${user.username}'),
                 Spacer(), // Olabildiğince büyük yer kaplar...
                 GestureDetector(
-                  onTap: authApiService.logout,
+                  onTap: () {
+                    authApiService.logout().then(
+                          (isLogout) => Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            LoginScreen.route,
+                            (Route<dynamic> route) => false,
+                          ),
+                        );
+                  },
                   child: Text(
                     'Logout',
                     style: TextStyle(color: Theme.of(context).primaryColor),
