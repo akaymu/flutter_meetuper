@@ -1,6 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/blocs/counter_bloc.dart';
 
 import '../widgets/bottom_navigation.dart';
 import 'meetup_detail_screen.dart';
@@ -16,31 +15,15 @@ class CounterHomeScreen extends StatefulWidget {
 }
 
 class _CounterHomeScreenState extends State<CounterHomeScreen> {
-  final StreamController<int> _streamController =
-      StreamController<int>.broadcast();
-  final StreamController<int> _counterController =
-      StreamController<int>.broadcast();
-
-  int _counter = 0;
-
-  @override
-  initState() {
-    super.initState();
-    _streamController.stream.listen((int number) {
-      _counter += number;
-      _counterController.sink.add(_counter);
-    });
-  }
-
   @override
   void dispose() {
-    _counterController.close();
-    _streamController.close();
+    counterBloc.dispose();
     super.dispose();
   }
 
   _increment() {
-    _streamController.sink.add(10);
+    // call stream
+    counterBloc.increment(15);
   }
 
   @override
@@ -59,7 +42,8 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
               style: TextStyle(fontSize: 15.0),
             ),
             StreamBuilder<int>(
-              stream: _counterController.stream,
+              // stream: _counterController.stream,
+              stream: counterBloc.counterController.stream,
               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                 if (snapshot.hasData) {
                   return Text(
@@ -78,8 +62,9 @@ class _CounterHomeScreenState extends State<CounterHomeScreen> {
             ),
             RaisedButton(
               child: StreamBuilder<int>(
-                stream: _counterController.stream,
-                initialData: _counter,
+                // stream: _counterController.stream,
+                stream: counterBloc.counterController.stream,
+                initialData: 0,
                 builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                   if (snapshot.hasData) {
                     return Text('Counter - ${snapshot.data}');
