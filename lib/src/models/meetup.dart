@@ -1,3 +1,5 @@
+import 'package:flutter_meetuper/src/models/user.dart';
+
 import 'category.dart';
 
 class Meetup {
@@ -15,6 +17,8 @@ class Meetup {
   final String createdAt;
   final String updatedAt;
   int joinedPeopleCount;
+  final User meetupCreator;
+  final List<User> joinedPeople;
 
   Meetup.fromJson(Map<String, dynamic> parsedJson)
       : this.id = parsedJson['_id'],
@@ -30,5 +34,10 @@ class Meetup {
         this.joinedPeopleCount = parsedJson['joinedPeopleCount'] ?? 0,
         this.createdAt = parsedJson['createdAt'] ?? '',
         this.updatedAt = parsedJson['updatedAt'] ?? '',
-        this.category = Category.fromJson(parsedJson['category']);
+        this.category = Category.fromJson(parsedJson['category']),
+        this.meetupCreator = User.fromJson(parsedJson['meetupCreator']),
+        this.joinedPeople = parsedJson['joinedPeople']
+                .map<User>((json) => User.fromJson(json))
+                .toList() ??
+            [];
 }

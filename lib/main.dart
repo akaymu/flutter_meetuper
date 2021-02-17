@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/blocs/user_bloc/user_bloc.dart';
 
 import 'src/blocs/auth_bloc/auth_bloc.dart';
 import 'src/blocs/bloc_provider.dart';
@@ -117,8 +118,11 @@ class _MeetuperAppState extends State<MeetuperApp> {
             return MaterialPageRoute(
               builder: (BuildContext context) {
                 return BlocProvider<MeetupBloc>(
-                  child: MeetupDetailScreen(meetupId: arguments.id),
                   bloc: MeetupBloc(),
+                  child: BlocProvider<UserBloc>(
+                    bloc: UserBloc(auth: AuthApiService()),
+                    child: MeetupDetailScreen(meetupId: arguments.id),
+                  ),
                 );
               },
             );
