@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/blocs/auth_bloc/auth_bloc.dart';
 import 'package:flutter_meetuper/src/blocs/bloc_provider.dart';
 import 'package:flutter_meetuper/src/blocs/meetup_bloc.dart';
 
@@ -23,10 +24,13 @@ class MeetupHomeScreen extends StatefulWidget {
 class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
   List<Meetup> meetups = [];
 
+  AuthBloc authBloc;
+
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
     BlocProvider.of<MeetupBloc>(context).fetchMeetups();
+    authBloc = BlocProvider.of<AuthBloc>(context);
+    super.initState();
   }
 
   @override
@@ -35,7 +39,7 @@ class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
       appBar: AppBar(title: Text('Home')),
       body: Column(
         children: <Widget>[
-          _MeetupTitle(),
+          _MeetupTitle(authBloc: authBloc),
           _MeetupList(),
         ],
       ),
@@ -48,6 +52,9 @@ class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
 }
 
 class _MeetupTitle extends StatelessWidget {
+  final AuthBloc authBloc;
+  _MeetupTitle({@required this.authBloc});
+
   final AuthApiService authApiService = AuthApiService();
 
   Widget _buildUserWelcome() {
@@ -74,12 +81,15 @@ class _MeetupTitle extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     authApiService.logout().then(
-                          (isLogout) => Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            LoginScreen.route,
-                            (Route<dynamic> route) => false,
-                          ),
-                        );
+                      (isLogout) {
+                        authBloc.dispatch(LoggedOut());
+                        // Navigator.pushNamedAndRemoveUntil(
+                        //   context,
+                        //   LoginScreen.route,
+                        //   (Route<dynamic> route) => false,
+                        // );
+                      },
+                    );
                   },
                   child: Text(
                     'Logout',

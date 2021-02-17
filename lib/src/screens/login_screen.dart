@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/blocs/auth_bloc/auth_bloc.dart';
+import 'package:flutter_meetuper/src/blocs/bloc_provider.dart';
 import 'package:flutter_meetuper/src/services/auth_api_service.dart';
 
 import '../models/forms.dart';
@@ -25,6 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormFieldState<String>> _emailKey =
       GlobalKey<FormFieldState<String>>();
 
+  AuthBloc _authBloc;
+
   LoginFormData _loginData = LoginFormData();
   AutovalidateMode _autoValidateMode = AutovalidateMode.disabled;
   BuildContext _scaffoldContext;
@@ -34,8 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    super.initState();
-
     // NOT: initState, build fonksiyonundan önce çalıştığı için
     // _scaffoldContext null olarak gelmektedir. Bu sebeple
     // _checkForMessageAndShowIfExists içindeki _scaffoldContext
@@ -43,6 +45,9 @@ class _LoginScreenState extends State<LoginScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkForMessageAndShowIfExists();
     });
+
+    _authBloc = BlocProvider.of<AuthBloc>(context);
+    super.initState();
   }
 
   @override
@@ -60,9 +65,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _login() {
-    widget.authApi.login(_loginData).then((data) {
-      Navigator.pushNamed(context, MeetupHomeScreen.route);
+    _authBloc.dispatch(InitLogging());
+    widget.authApi.login(_loginData).then((_) {
+      // Navigator.pushNamed(context, MeetupHomeScreen.route);
+      _authBloc.dispatch(LoggedIn());
     }).catchError((res) {
+      _authBloc.dispatch(LoggedOut());
       Scaffold.of(_scaffoldContext).showSnackBar(
         SnackBar(
           content: Text(res['errors']['message']),

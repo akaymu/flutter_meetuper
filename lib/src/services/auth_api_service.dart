@@ -56,7 +56,7 @@ class AuthApiService {
 
   Future<bool> isAuthenticated() async {
     final token = await this.token;
-    if (token.isNotEmpty) {
+    if (token != null && token.isNotEmpty) {
       final decodedToken = decode(token);
 
       if (decodedToken['exp'] * 1000 > DateTime.now().millisecond) {

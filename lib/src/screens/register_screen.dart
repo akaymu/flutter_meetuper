@@ -25,7 +25,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _handleSuccess(data) {
     Navigator.pushNamedAndRemoveUntil(
       context,
-      LoginScreen.route,
+      '/',
       (Route<dynamic> route) => false,
       arguments: LoginScreenArguments(
           'You have been successfully registered. Feel free to login now.'),
@@ -168,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, LoginScreen.route);
+              Navigator.pushNamed(context, '/');
             },
             child: Text(
               'Already Registered? Login Now.',
