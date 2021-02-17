@@ -82,7 +82,11 @@ class _MeetupTitle extends StatelessWidget {
                   onTap: () {
                     authApiService.logout().then(
                       (isLogout) {
-                        authBloc.dispatch(LoggedOut());
+                        authBloc.dispatch(
+                          LoggedOut(
+                              message:
+                                  'You have been successfully logged out!'),
+                        );
                         // Navigator.pushNamedAndRemoveUntil(
                         //   context,
                         //   LoginScreen.route,

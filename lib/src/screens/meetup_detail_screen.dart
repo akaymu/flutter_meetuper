@@ -20,6 +20,7 @@ class MeetupDetailScreen extends StatefulWidget {
 class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
   MeetupBloc _meetupBloc;
   UserBloc _userBloc;
+  Meetup _meetup;
 
   @override
   void initState() {
@@ -28,9 +29,20 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
 
     _meetupBloc.fetchMeetupDetail(widget.meetupId);
     _meetupBloc.meetupDetail.listen((meetup) {
+      _meetup = meetup;
       _userBloc.dispatch(CheckUserPermissionsOnMeetup(meetup: meetup));
     });
     super.initState();
+  }
+
+  _joinMeetup() {
+    // _userBloc.dispatch(JoinMeetup());
+    _meetupBloc.joinMeetup(_meetup);
+  }
+
+  _leaveMeetup() {
+    // _userBloc.dispatch(LeaveMeetup());
+    _meetupBloc.leaveMeetup(_meetup);
   }
 
   @override
@@ -74,7 +86,11 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
             },
           ),
           bottomNavigationBar: BottomNavigation(),
-          floatingActionButton: _MeetupActionButton(userState: userState),
+          floatingActionButton: _MeetupActionButton(
+            userState: userState,
+            joinMeetup: _joinMeetup,
+            leaveMeetup: _leaveMeetup,
+          ),
         );
       },
     );
@@ -83,21 +99,29 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
 
 class _MeetupActionButton extends StatelessWidget {
   final AuthApiService auth = AuthApiService();
+
   final UserState userState;
-  _MeetupActionButton({@required this.userState});
+  final Function joinMeetup;
+  final Function leaveMeetup;
+
+  _MeetupActionButton({
+    @required this.userState,
+    @required this.joinMeetup,
+    @required this.leaveMeetup,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (userState is UserIsMember) {
       return FloatingActionButton(
-        onPressed: () {},
+        onPressed: leaveMeetup,
         child: Icon(Icons.person_remove),
         backgroundColor: Colors.red,
         tooltip: 'Leave Meetup',
       );
     } else if (userState is UserIsNotMember) {
       return FloatingActionButton(
-        onPressed: () {},
+        onPressed: joinMeetup,
         child: Icon(Icons.person_add),
         backgroundColor: Colors.green,
         tooltip: 'Join Meetup',

@@ -70,13 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Navigator.pushNamed(context, MeetupHomeScreen.route);
       _authBloc.dispatch(LoggedIn());
     }).catchError((res) {
-      _authBloc.dispatch(LoggedOut());
-      Scaffold.of(_scaffoldContext).showSnackBar(
-        SnackBar(
-          content: Text(res['errors']['message']),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      _authBloc.dispatch(LoggedOut(message: res['errors']['message']));
     });
   }
 

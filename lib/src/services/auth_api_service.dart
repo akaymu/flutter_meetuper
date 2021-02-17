@@ -39,6 +39,15 @@ class AuthApiService {
     }
   }
 
+  Future<Map<String, dynamic>> get _decodedToken async {
+    final token = await this.token;
+    if (token != null && token.isNotEmpty) {
+      return decode(token);
+    }
+
+    return null;
+  }
+
   Future<bool> _persistToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString('token', token);
@@ -54,17 +63,32 @@ class AuthApiService {
     return false;
   }
 
-  Future<bool> isAuthenticated() async {
-    final token = await this.token;
-    if (token != null && token.isNotEmpty) {
-      final decodedToken = decode(token);
+  void initUserFromToken() async {
+    authUser = await _decodedToken;
+  }
 
-      if (decodedToken['exp'] * 1000 > DateTime.now().millisecond) {
-        authUser = decodedToken; // Setting _authUser with setter function
-        return true;
-      }
+  Future<bool> isAuthenticated() async {
+    final decodedToken = await _decodedToken;
+    if (decodedToken != null) {
+      return decodedToken['exp'] * 1000 > DateTime.now().millisecond;
     }
     return false;
+  }
+
+  Future<User> fetchAuthUser() async {
+    try {
+      final token = await this.token;
+      final res = await http
+          .get('$url/users/me', headers: {'Authorization': 'Bearer $token'});
+
+      final decodedBody = Map<String, dynamic>.from(json.decode(res.body));
+      await _saveToken(decodedBody['token']);
+      authUser = decodedBody;
+      return authUser;
+    } catch (e) {
+      await _removeAuthData();
+      throw Exception('Can not fetch user');
+    }
   }
 
   Future<Map<String, dynamic>> login(LoginFormData loginData) async {

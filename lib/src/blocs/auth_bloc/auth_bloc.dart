@@ -31,6 +31,9 @@ class AuthBloc extends BlocBase {
       final bool isAuth = await auth.isAuthenticated();
 
       if (isAuth) {
+        await auth.fetchAuthUser().catchError((error) {
+          dispatch(LoggedOut());
+        });
         yield AuthenticationAuthenticated();
       } else {
         yield AuthenticationUnauthenticated();
@@ -46,7 +49,7 @@ class AuthBloc extends BlocBase {
     }
 
     if (event is LoggedOut) {
-      yield AuthenticationUnauthenticated(logout: true);
+      yield AuthenticationUnauthenticated(message: event.message);
     }
   }
 
