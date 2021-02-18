@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import '../models/category.dart';
 import '../models/forms.dart';
@@ -34,7 +35,7 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
     if (form.validate()) {
       form.save();
       print(_meetupFormData.toJson());
-      print(_meetupFormData.category?.name);
+      print(_meetupFormData.startDate);
     }
   }
 
@@ -89,14 +90,15 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
             ),
             onSaved: (value) => _meetupFormData.title = value,
           ),
-          TextFormField(
-            style: Theme.of(context).textTheme.headline6,
-            inputFormatters: [LengthLimitingTextInputFormatter(30)],
-            decoration: InputDecoration(
-              hintText: 'Start Date',
-            ),
-            onSaved: (value) => _meetupFormData.startDate = value,
-          ),
+          // TextFormField(
+          //   style: Theme.of(context).textTheme.headline6,
+          //   inputFormatters: [LengthLimitingTextInputFormatter(30)],
+          //   decoration: InputDecoration(
+          //     hintText: 'Start Date',
+          //   ),
+          //   onSaved: (value) => _meetupFormData.startDate = value,
+          // ),
+          _DatePicker(),
           // TextFormField(
           //   style: Theme.of(context).textTheme.headline6,
           //   inputFormatters: [LengthLimitingTextInputFormatter(30)],
@@ -216,6 +218,60 @@ class _CategorySelect extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _DatePicker extends StatefulWidget {
+  @override
+  _DatePickerState createState() => _DatePickerState();
+}
+
+class _DatePickerState extends State<_DatePicker> {
+  DateTime _dateNow = DateTime.now();
+  DateTime _initialDate = DateTime.now();
+
+  final TextEditingController _dateController = TextEditingController();
+  final _dateFormat = DateFormat('dd/MM/yyyy');
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: _initialDate,
+      firstDate: _dateNow,
+      lastDate: DateTime(_dateNow.year + 1, _dateNow.month, _dateNow.day),
+    );
+
+    if (picked != null && picked != _initialDate) {
+      setState(() {
+        _dateController.text = _dateFormat.format(picked);
+        _initialDate = picked;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
+            controller: _dateController,
+            enabled: false,
+            decoration: InputDecoration(
+              icon: const Icon(Icons.calendar_today),
+              hintText: 'Enter date when meetup starts',
+              labelText: 'Dob',
+            ),
+            keyboardType: TextInputType.datetime,
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.more_horiz),
+          tooltip: 'Choose Date',
+          onPressed: (() => _selectDate(context)),
+        ),
+      ],
     );
   }
 }
