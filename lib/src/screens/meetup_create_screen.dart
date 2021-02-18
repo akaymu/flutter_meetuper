@@ -30,6 +30,10 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
     super.initState();
   }
 
+  void _handleDateChange(DateTime selectedDate) {
+    _meetupFormData.startDate = selectedDate;
+  }
+
   void _submitCreate() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -98,7 +102,7 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
           //   ),
           //   onSaved: (value) => _meetupFormData.startDate = value,
           // ),
-          _DatePicker(),
+          _DatePicker(onDateChange: _handleDateChange),
           // TextFormField(
           //   style: Theme.of(context).textTheme.headline6,
           //   inputFormatters: [LengthLimitingTextInputFormatter(30)],
@@ -223,6 +227,9 @@ class _CategorySelect extends StatelessWidget {
 }
 
 class _DatePicker extends StatefulWidget {
+  final Function(DateTime date) onDateChange;
+  _DatePicker({@required this.onDateChange});
+
   @override
   _DatePickerState createState() => _DatePickerState();
 }
@@ -243,6 +250,7 @@ class _DatePickerState extends State<_DatePicker> {
     );
 
     if (picked != null && picked != _initialDate) {
+      widget.onDateChange(picked);
       setState(() {
         _dateController.text = _dateFormat.format(picked);
         _initialDate = picked;
