@@ -34,6 +34,7 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
     if (form.validate()) {
       form.save();
       print(_meetupFormData.toJson());
+      print(_meetupFormData.category?.name);
     }
   }
 
@@ -96,13 +97,17 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
             ),
             onSaved: (value) => _meetupFormData.startDate = value,
           ),
-          TextFormField(
-            style: Theme.of(context).textTheme.headline6,
-            inputFormatters: [LengthLimitingTextInputFormatter(30)],
-            decoration: InputDecoration(
-              hintText: 'Category',
-            ),
-            onSaved: (value) => _meetupFormData.category = null,
+          // TextFormField(
+          //   style: Theme.of(context).textTheme.headline6,
+          //   inputFormatters: [LengthLimitingTextInputFormatter(30)],
+          //   decoration: InputDecoration(
+          //     hintText: 'Category',
+          //   ),
+          //   onSaved: (value) => _meetupFormData.category = null,
+          // ),
+          _CategorySelect(
+            categories: _categories,
+            meetupFormData: _meetupFormData,
           ),
           TextFormField(
             style: Theme.of(context).textTheme.headline6,
@@ -172,6 +177,45 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
         child: const Text('Submit'),
         onPressed: _submitCreate,
       ),
+    );
+  }
+}
+
+// This is for dropdown select input....
+class _CategorySelect extends StatelessWidget {
+  final List<Category> categories;
+  final MeetupFormData meetupFormData;
+
+  _CategorySelect({@required this.categories, @required this.meetupFormData});
+
+  @override
+  Widget build(BuildContext context) {
+    return FormField<Category>(
+      builder: (FormFieldState<Category> state) {
+        return InputDecorator(
+          decoration: InputDecoration(
+            icon: const Icon(Icons.color_lens),
+            labelText: 'Category',
+          ),
+          isEmpty: meetupFormData.category == null,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Category>(
+              value: meetupFormData.category,
+              isDense: true,
+              onChanged: (Category newCategory) {
+                meetupFormData.category = newCategory;
+                state.didChange(newCategory);
+              },
+              items: categories.map((Category category) {
+                return DropdownMenuItem<Category>(
+                  value: category,
+                  child: Text(category.name),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 }
