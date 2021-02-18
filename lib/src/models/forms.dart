@@ -1,3 +1,5 @@
+import 'package:flutter_meetuper/src/models/category.dart';
+
 class LoginFormData {
   String email = '';
   String password = '';
@@ -22,5 +24,29 @@ class RegisterFormData {
         'password': password,
         'passwordConfirmation': passwordConfirmation,
         'avatar': avatar
+      };
+}
+
+class MeetupFormData {
+  String location = '';
+  String title = '';
+  String startDate = '';
+  Category category = null;
+  String image = '';
+  String shortInfo = '';
+  String description = '';
+  String timeTo = '';
+  String timeFrom = '';
+
+  Map<String, dynamic> toJson() => {
+        'location': location,
+        'title': title,
+        'startDate': startDate,
+        'category': category,
+        'image': image,
+        'shortInfo': shortInfo,
+        'description': description,
+        'timeTo': timeTo,
+        'timeFrom': timeFrom
       };
 }

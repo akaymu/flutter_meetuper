@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_meetuper/src/blocs/auth_bloc/auth_bloc.dart';
 import 'package:flutter_meetuper/src/blocs/bloc_provider.dart';
 import 'package:flutter_meetuper/src/blocs/meetup_bloc.dart';
+import 'package:flutter_meetuper/src/screens/meetup_create_screen.dart';
 
 import '../models/meetup.dart';
 import '../services/auth_api_service.dart';
@@ -45,7 +46,9 @@ class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, MeetupCreateScreen.route);
+        },
       ),
     );
   }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_meetuper/src/models/arguments.dart';
-import 'package:flutter_meetuper/src/services/auth_api_service.dart';
 
+import '../models/arguments.dart';
 import '../models/forms.dart';
+import '../services/auth_api_service.dart';
 import '../utils/validators.dart';
-import 'login_screen.dart';
 import 'meetup_home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {

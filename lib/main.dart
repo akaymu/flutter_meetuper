@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_meetuper/src/blocs/user_bloc/user_bloc.dart';
 
 import 'src/blocs/auth_bloc/auth_bloc.dart';
 import 'src/blocs/bloc_provider.dart';
 import 'src/blocs/counter_bloc.dart';
 import 'src/blocs/meetup_bloc.dart';
+import 'src/blocs/user_bloc/user_bloc.dart';
 import 'src/models/arguments.dart';
 import 'src/screens/counter_home_screen.dart';
 import 'src/screens/login_screen.dart';
+import 'src/screens/meetup_create_screen.dart';
 import 'src/screens/meetup_detail_screen.dart';
 import 'src/screens/meetup_home_screen.dart';
 import 'src/screens/register_screen.dart';
@@ -158,6 +159,13 @@ class _MeetuperAppState extends State<MeetuperApp> {
               },
             );
             break;
+
+          case MeetupCreateScreen.route:
+            return MaterialPageRoute(
+              builder: (BuildContext context) {
+                return MeetupCreateScreen();
+              },
+            );
 
           default:
             return null;
