@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/category.dart';
 import '../models/meetup.dart';
-import 'dart:io' show Platform;
 
 class MeetupApiService {
   final String url = Platform.isIOS
@@ -30,6 +33,12 @@ class MeetupApiService {
 
     final Map<String, dynamic> parsedMeetup = json.decode(res.body);
     return Meetup.fromJson(parsedMeetup);
+  }
+
+  Future<List<Category>> fetchCategories() async {
+    final res = await http.get('$url/categories');
+    final List decodedBody = json.decode(res.body);
+    return decodedBody.map((val) => Category.fromJson(val)).toList();
   }
 
   // Join Meetup
