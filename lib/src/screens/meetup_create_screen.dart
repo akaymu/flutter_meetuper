@@ -34,6 +34,14 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
     _meetupFormData.startDate = selectedDate;
   }
 
+  void _handleTimeFromChange(String time) {
+    _meetupFormData.timeFrom = time;
+  }
+
+  void _handleTimeToChange(String time) {
+    _meetupFormData.timeTo = time;
+  }
+
   void _submitCreate() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -139,21 +147,29 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
             ),
             onSaved: (value) => _meetupFormData.description = value,
           ),
-          TextFormField(
-            style: Theme.of(context).textTheme.headline6,
-            inputFormatters: [LengthLimitingTextInputFormatter(30)],
-            decoration: InputDecoration(
-              hintText: 'Time From',
-            ),
-            onSaved: (value) => _meetupFormData.timeFrom = value,
+          // TextFormField(
+          //   style: Theme.of(context).textTheme.headline6,
+          //   inputFormatters: [LengthLimitingTextInputFormatter(30)],
+          //   decoration: InputDecoration(
+          //     hintText: 'Time From',
+          //   ),
+          //   onSaved: (value) => _meetupFormData.timeFrom = value,
+          // ),
+          // TextFormField(
+          //   style: Theme.of(context).textTheme.headline6,
+          //   inputFormatters: [LengthLimitingTextInputFormatter(30)],
+          //   decoration: InputDecoration(
+          //     hintText: 'Time To',
+          //   ),
+          //   onSaved: (value) => _meetupFormData.timeTo = value,
+          // ),
+          _TimeSelect(
+            onTimeChange: _handleTimeFromChange,
+            label: 'Time From',
           ),
-          TextFormField(
-            style: Theme.of(context).textTheme.headline6,
-            inputFormatters: [LengthLimitingTextInputFormatter(30)],
-            decoration: InputDecoration(
-              hintText: 'Time To',
-            ),
-            onSaved: (value) => _meetupFormData.timeTo = value,
+          _TimeSelect(
+            onTimeChange: _handleTimeToChange,
+            label: 'Time To',
           ),
           _buildSubmitBtn(),
         ],
@@ -280,6 +296,102 @@ class _DatePickerState extends State<_DatePicker> {
           onPressed: (() => _selectDate(context)),
         ),
       ],
+    );
+  }
+}
+
+class _TimeSelect extends StatefulWidget {
+  final Function(String) onTimeChange;
+  final String label;
+  _TimeSelect({@required this.onTimeChange, this.label});
+
+  @override
+  __TimeSelectState createState() => __TimeSelectState();
+}
+
+class __TimeSelectState extends State<_TimeSelect> {
+  final List<String> _times = [
+    '00:00',
+    '00:30',
+    '01:00',
+    '01:30',
+    '02:00',
+    '02:30',
+    '03:00',
+    '03:30',
+    '04:00',
+    '04:30',
+    '05:00',
+    '05:30',
+    '06:00',
+    '06:30',
+    '07:00',
+    '07:30',
+    '08:00',
+    '08:30',
+    '09:00',
+    '09:30',
+    '10:00',
+    '10:30',
+    '11:00',
+    '11:30',
+    '12:00',
+    '12:30',
+    '13:00',
+    '13:30',
+    '14:00',
+    '14:30',
+    '15:00',
+    '15:30',
+    '16:00',
+    '16:30',
+    '17:00',
+    '17:30',
+    '18:00',
+    '18:30',
+    '19:00',
+    '19:30',
+    '20:00',
+    '20:30',
+    '21:00',
+    '21:30',
+    '22:00',
+    '22:30',
+    '23:00',
+    '23:30',
+  ];
+
+  String _selectedTime;
+
+  @override
+  Widget build(BuildContext context) {
+    return FormField<String>(
+      builder: (FormFieldState<String> state) {
+        return InputDecorator(
+          decoration: InputDecoration(
+            icon: const Icon(Icons.timer),
+            labelText: widget.label ?? 'Time',
+          ),
+          isEmpty: _selectedTime == null,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: _selectedTime,
+              isDense: true,
+              onChanged: (String newTime) {
+                widget.onTimeChange(newTime);
+                _selectedTime = newTime;
+                state.didChange(newTime);
+              },
+              items: _times.map((String time) {
+                return DropdownMenuItem<String>(
+                  value: time,
+                  child: Text(time),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 }
