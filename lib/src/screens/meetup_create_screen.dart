@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_meetuper/src/utils/generate_times.dart';
+import 'package:flutter_meetuper/src/widgets/select_input.dart';
 import 'package:intl/intl.dart';
 
 import '../models/category.dart';
@@ -103,26 +104,12 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
             ),
             onSaved: (value) => _meetupFormData.title = value,
           ),
-          // TextFormField(
-          //   style: Theme.of(context).textTheme.headline6,
-          //   inputFormatters: [LengthLimitingTextInputFormatter(30)],
-          //   decoration: InputDecoration(
-          //     hintText: 'Start Date',
-          //   ),
-          //   onSaved: (value) => _meetupFormData.startDate = value,
-          // ),
           _DatePicker(onDateChange: _handleDateChange),
-          // TextFormField(
-          //   style: Theme.of(context).textTheme.headline6,
-          //   inputFormatters: [LengthLimitingTextInputFormatter(30)],
-          //   decoration: InputDecoration(
-          //     hintText: 'Category',
-          //   ),
-          //   onSaved: (value) => _meetupFormData.category = null,
-          // ),
-          _CategorySelect(
-            categories: _categories,
-            meetupFormData: _meetupFormData,
+          SelectInput(
+            items: _categories,
+            onChange: (Category c) => _meetupFormData.category = c,
+            icon: const Icon(Icons.color_lens),
+            label: 'Category',
           ),
           TextFormField(
             style: Theme.of(context).textTheme.headline6,

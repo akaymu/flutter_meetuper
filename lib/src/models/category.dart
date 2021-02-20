@@ -7,4 +7,7 @@ class Category {
       : this.id = parsedJson['_id'],
         this.name = parsedJson['name'] ?? '',
         this.image = parsedJson['image'] ?? '';
+
+  @override
+  String toString() => name;
 }
