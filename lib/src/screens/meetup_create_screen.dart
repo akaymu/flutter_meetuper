@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_meetuper/src/utils/generate_times.dart';
-import 'package:flutter_meetuper/src/widgets/select_input.dart';
 import 'package:intl/intl.dart';
 
 import '../models/category.dart';
 import '../models/forms.dart';
 import '../services/meetup_api_service.dart';
+import '../utils/generate_times.dart';
+import '../widgets/select_input.dart';
+import 'meetup_detail_screen.dart';
+import 'meetup_home_screen.dart';
 
 class MeetupCreateScreen extends StatefulWidget {
   static const String route = '/meetupCreate';
@@ -39,21 +41,16 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      _api.createMeetup(_meetupFormData);
+      _api.createMeetup(_meetupFormData).then((String meetupId) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          MeetupDetailScreen.route,
+          // (Route<dynamic> route) => false,
+          ModalRoute.withName('/'),
+          arguments: MeetupDetailArguments(id: meetupId),
+        );
+      }).catchError((e) => print(e));
     }
-  }
-
-  void handleSuccessfulCreate(dynamic data) async {
-    // await Navigator.pushNamed(
-    //   context,
-    //   LoginScreen.route,
-    //   arguments: LoginScreenArguments('You have been successfully logged in!'),
-    // );
-  }
-
-  void handleError(String message) {
-    Scaffold.of(_scaffoldContext)
-        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -103,7 +100,7 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
           ),
           TextFormField(
             style: Theme.of(context).textTheme.headline6,
-            inputFormatters: [LengthLimitingTextInputFormatter(30)],
+            inputFormatters: [LengthLimitingTextInputFormatter(300)],
             decoration: InputDecoration(
               hintText: 'Image',
             ),
