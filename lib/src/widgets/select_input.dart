@@ -32,8 +32,7 @@ class _SelectInputState<T> extends State<SelectInput<T>> {
               isDense: true,
               onChanged: (T newValue) {
                 widget.onChange(newValue);
-                value = newValue;
-                state.didChange(newValue);
+                setState(() => value = newValue);
               },
               items: widget.items.map((T item) {
                 return DropdownMenuItem<T>(
