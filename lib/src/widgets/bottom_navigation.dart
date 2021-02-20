@@ -1,38 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meetuper/src/blocs/user_bloc/user_bloc.dart';
 
-class BottomNavigation extends StatefulWidget {
+class BottomNavigation extends StatelessWidget {
   final Function(int) onChange;
   final UserState userState;
+  final int currentIndex;
   BottomNavigation({
     @required this.onChange,
     @required this.userState,
+    @required this.currentIndex,
   });
 
-  @override
-  _BottomNavigationState createState() => _BottomNavigationState();
-}
-
-class _BottomNavigationState extends State<BottomNavigation> {
-  int _currentIndex = 0;
-
-  void _handleTap(int tappedIndex) {
-    widget.onChange(tappedIndex);
-    setState(() => _currentIndex = tappedIndex);
+  void _handleTap(BuildContext context, int tappedIndex) {
+    if (tappedIndex != currentIndex) {
+      if (_canAccess() || tappedIndex == 0) {
+        onChange(tappedIndex);
+      } else {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Text('You need to login and to be member of this meetup'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+    }
   }
 
   Color _renderColor() {
-    return (widget.userState is UserIsMember ||
-            widget.userState is UserIsMeetupOwner)
-        ? null
-        : Colors.black12;
+    return _canAccess() ? null : Colors.black12;
+  }
+
+  bool _canAccess() {
+    return userState is UserIsMember || userState is UserIsMeetupOwner;
   }
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      onTap: _handleTap,
-      currentIndex: _currentIndex,
+      onTap: (int i) => _handleTap(context, i),
+      currentIndex: currentIndex,
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
