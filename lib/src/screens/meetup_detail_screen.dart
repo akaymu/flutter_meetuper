@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/widgets/thread_list.dart';
 
 import '../blocs/bloc_provider.dart';
 import '../blocs/meetup_bloc.dart';
@@ -35,6 +36,7 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
       _meetup = meetup;
       _userBloc.dispatch(CheckUserPermissionsOnMeetup(meetup: meetup));
     });
+
     super.initState();
   }
 
@@ -99,7 +101,8 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
               }
 
               if (_isActiveView(Views.threadsView)) {
-                return Center(child: Text('I am Thread View!'));
+                _meetupBloc.fetchThreads(widget.meetupId);
+                return ThreadList(bloc: _meetupBloc);
               }
 
               if (_isActiveView(Views.peopleView)) {

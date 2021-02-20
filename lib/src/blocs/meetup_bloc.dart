@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_meetuper/src/models/thread.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../models/meetup.dart';
@@ -23,6 +24,11 @@ class MeetupBloc implements BlocBase {
   Stream<Meetup> get meetupDetail => _meetupDetailController.stream;
   StreamSink<Meetup> get _inMeetupDetail => _meetupDetailController.sink;
 
+  final BehaviorSubject<List<Thread>> _threadsController =
+      BehaviorSubject<List<Thread>>();
+  Stream<List<Thread>> get threads => _threadsController.stream;
+  StreamSink<List<Thread>> get _inThreads => _threadsController.sink;
+
   void fetchMeetups() async {
     final List<Meetup> meetups = await _api.fetchMeetups();
     _inMeetups.add(meetups);
@@ -31,6 +37,11 @@ class MeetupBloc implements BlocBase {
   void fetchMeetupDetail(String meetupId) async {
     final meetup = await _api.fetchMeetupById(meetupId);
     _inMeetupDetail.add(meetup);
+  }
+
+  void fetchThreads(String meetupId) async {
+    final List<Thread> threads = await _api.fetchThreads(meetupId);
+    _inThreads.add(threads);
   }
 
   void joinMeetup(Meetup meetup) {
@@ -69,5 +80,6 @@ class MeetupBloc implements BlocBase {
   void dispose() {
     _meetupController.close();
     _meetupDetailController.close();
+    _threadsController.close();
   }
 }

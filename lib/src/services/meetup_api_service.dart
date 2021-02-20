@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 
-import 'package:flutter_meetuper/src/models/forms.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/category.dart';
+import '../models/forms.dart';
 import '../models/meetup.dart';
+import '../models/thread.dart';
 
 class MeetupApiService {
   final String url = Platform.isIOS
@@ -59,6 +60,13 @@ class MeetupApiService {
     } else {
       return Future.error(res.body);
     }
+  }
+
+  Future<List<Thread>> fetchThreads(String meetupId) async {
+    final res = await http.get('$url/threads?meetupId=$meetupId');
+    final Map<String, dynamic> parsedBody = json.decode(res.body);
+    List<dynamic> parsedThreads = parsedBody['threads'];
+    return parsedThreads.map((val) => Thread.fromJson(val)).toList();
   }
 
   // Join Meetup
