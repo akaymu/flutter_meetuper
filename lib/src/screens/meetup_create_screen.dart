@@ -35,20 +35,11 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
     _meetupFormData.startDate = selectedDate;
   }
 
-  void _handleTimeFromChange(String time) {
-    setState(() => _meetupFormData.timeFrom = time);
-  }
-
-  void _handleTimeToChange(String time) {
-    setState(() => _meetupFormData.timeTo = time);
-  }
-
   void _submitCreate() {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      print(_meetupFormData.toJson());
-      print(_meetupFormData.startDate);
+      _api.createMeetup(_meetupFormData);
     }
   }
 
@@ -132,16 +123,20 @@ class _MeetupCreateScreenState extends State<MeetupCreateScreen> {
             decoration: InputDecoration(
               hintText: 'Description',
             ),
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
             onSaved: (value) => _meetupFormData.description = value,
           ),
           SelectInput(
-            onChange: _handleTimeFromChange,
+            onChange: (String time) =>
+                setState(() => _meetupFormData.timeFrom = time),
             label: 'Time From',
             items: generateTimes(endTime: _meetupFormData.timeTo),
             icon: const Icon(Icons.timer),
           ),
           SelectInput(
-            onChange: _handleTimeToChange,
+            onChange: (String time) =>
+                setState(() => _meetupFormData.timeTo = time),
             label: 'Time To',
             items: generateTimes(startTime: _meetupFormData.timeFrom),
             icon: const Icon(Icons.timer),

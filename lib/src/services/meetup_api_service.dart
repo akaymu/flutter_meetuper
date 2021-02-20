@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 
+import 'package:flutter_meetuper/src/models/forms.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,6 +40,25 @@ class MeetupApiService {
     final res = await http.get('$url/categories');
     final List decodedBody = json.decode(res.body);
     return decodedBody.map((val) => Category.fromJson(val)).toList();
+  }
+
+  Future createMeetup(MeetupFormData formData) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString('token');
+    final String body = json.encode(formData.toJson());
+
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    final res = await http.post('$url/meetups', headers: headers, body: body);
+
+    if (res.statusCode == 200) {
+      return json.decode(res.body);
+    } else {
+      return Future.error(res.body);
+    }
   }
 
   // Join Meetup
