@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:rxdart/subjects.dart';
+
 import '../models/meetup.dart';
 import '../models/user.dart';
 import '../services/auth_api_service.dart';
@@ -16,8 +18,8 @@ class MeetupBloc implements BlocBase {
   Stream<List<Meetup>> get meetups => _meetupController.stream;
   StreamSink<List<Meetup>> get _inMeetups => _meetupController.sink;
 
-  final StreamController<Meetup> _meetupDetailController =
-      StreamController.broadcast();
+  final BehaviorSubject<Meetup> _meetupDetailController =
+      BehaviorSubject<Meetup>();
   Stream<Meetup> get meetupDetail => _meetupDetailController.stream;
   StreamSink<Meetup> get _inMeetupDetail => _meetupDetailController.sink;
 

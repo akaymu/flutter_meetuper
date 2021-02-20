@@ -7,6 +7,8 @@ import '../models/meetup.dart';
 import '../services/auth_api_service.dart';
 import '../widgets/bottom_navigation.dart';
 
+enum Views { detailView, threadsView, peopleView }
+
 class MeetupDetailScreen extends StatefulWidget {
   static const String route = '/meetupDetail';
 
@@ -21,6 +23,7 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
   MeetupBloc _meetupBloc;
   UserBloc _userBloc;
   Meetup _meetup;
+  int screenIndex = 0;
 
   @override
   void initState() {
@@ -35,14 +38,18 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
     super.initState();
   }
 
-  _joinMeetup() {
+  void _joinMeetup() {
     // _userBloc.dispatch(JoinMeetup());
     _meetupBloc.joinMeetup(_meetup);
   }
 
-  _leaveMeetup() {
+  void _leaveMeetup() {
     // _userBloc.dispatch(LeaveMeetup());
     _meetupBloc.leaveMeetup(_meetup);
+  }
+
+  bool _isActiveView(Views view) {
+    return view.index == screenIndex;
   }
 
   @override
@@ -56,36 +63,56 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
           appBar: AppBar(
             title: Text('Meetup Detail'),
           ),
-          body: StreamBuilder<Meetup>(
-            stream: _meetupBloc.meetupDetail,
-            builder: (BuildContext context, AsyncSnapshot<Meetup> snapshot) {
-              if (snapshot.hasData) {
-                final meetup = snapshot.data;
-                return ListView(
-                  children: <Widget>[
-                    HeaderSection(meetup),
-                    TitleSection(meetup),
-                    AdditionalInfoSection(meetup),
-                    Padding(
-                      padding: const EdgeInsets.all(32.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                            'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
-                            'Alps. Situated 1,578 meters above sea level, it is one of the '
-                            'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
-                            'half-hour walk through pastures and pine forest, leads you to the '
-                            'lake, which warms to 20 degrees Celsius in the summer. Activities '
-                            'enjoyed here include rowing, and riding the summer toboggan run.'),
-                      ),
-                    ),
-                  ],
+          body: Builder(
+            builder: (BuildContext context) {
+              if (_isActiveView(Views.detailView)) {
+                return StreamBuilder<Meetup>(
+                  stream: _meetupBloc.meetupDetail,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Meetup> snapshot) {
+                    if (snapshot.hasData) {
+                      final meetup = snapshot.data;
+                      return ListView(
+                        children: <Widget>[
+                          HeaderSection(meetup),
+                          TitleSection(meetup),
+                          AdditionalInfoSection(meetup),
+                          Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                  'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
+                                  'Alps. Situated 1,578 meters above sea level, it is one of the '
+                                  'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
+                                  'half-hour walk through pastures and pine forest, leads you to the '
+                                  'lake, which warms to 20 degrees Celsius in the summer. Activities '
+                                  'enjoyed here include rowing, and riding the summer toboggan run.'),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                    return Container(width: 0, height: 0);
+                  },
                 );
               }
-              return Container(width: 0, height: 0);
+
+              if (_isActiveView(Views.threadsView)) {
+                return Center(child: Text('I am Thread View!'));
+              }
+
+              if (_isActiveView(Views.peopleView)) {
+                return Center(child: Text('I am People View!'));
+              }
+
+              return null;
             },
           ),
-          bottomNavigationBar: BottomNavigation(),
+          bottomNavigationBar: BottomNavigation(
+            userState: userState,
+            onChange: (int i) => setState(() => screenIndex = i),
+          ),
           floatingActionButton: _MeetupActionButton(
             userState: userState,
             joinMeetup: _joinMeetup,
