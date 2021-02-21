@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meetuper/src/widgets/joined_people_list.dart';
 import 'package:flutter_meetuper/src/widgets/thread_list.dart';
 
 import '../blocs/bloc_provider.dart';
@@ -106,7 +107,7 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
               }
 
               if (_isActiveView(Views.peopleView)) {
-                return Center(child: Text('I am People View!'));
+                return JoinedPeopleList(bloc: _meetupBloc);
               }
 
               return null;
