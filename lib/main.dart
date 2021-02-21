@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'src/blocs/auth_bloc/auth_bloc.dart';
 import 'src/blocs/bloc_provider.dart';
@@ -42,6 +43,7 @@ void main() {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('tr');
     return BlocProvider<AuthBloc>(
       child: MeetuperApp(),
       bloc: AuthBloc(auth: AuthApiService()),

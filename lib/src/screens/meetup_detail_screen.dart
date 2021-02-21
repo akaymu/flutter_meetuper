@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meetuper/src/widgets/joined_people_list.dart';
 import 'package:flutter_meetuper/src/widgets/thread_list.dart';
+import 'package:intl/intl.dart';
 
 import '../blocs/bloc_provider.dart';
 import '../blocs/meetup_bloc.dart';
@@ -256,6 +257,8 @@ class HeaderSection extends StatelessWidget {
   final Meetup meetup;
   HeaderSection(this.meetup);
 
+  final DateFormat dateFormat = DateFormat('dd LLLL yyyy', 'tr_TR');
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -277,11 +280,10 @@ class HeaderSection extends StatelessWidget {
           child: ListTile(
             leading: CircleAvatar(
               radius: 30.0,
-              backgroundImage: NetworkImage(
-                  'https://cdn.dribbble.com/users/304574/screenshots/6222816/male-user-placeholder.png?compress=1&resize=400x300'),
+              backgroundImage: NetworkImage(meetup.meetupCreator?.avatar),
             ),
             title: Text(
-              meetup.title,
+              meetup.meetupCreator.name,
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
@@ -289,7 +291,7 @@ class HeaderSection extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              meetup.shortInfo,
+              dateFormat.format(DateTime.tryParse(meetup.createdAt)),
               style: TextStyle(
                 fontSize: 17.0,
                 fontWeight: FontWeight.bold,
