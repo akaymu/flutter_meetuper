@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_meetuper/src/blocs/auth_bloc/auth_bloc.dart';
-import 'package:flutter_meetuper/src/blocs/bloc_provider.dart';
-import 'package:flutter_meetuper/src/blocs/meetup_bloc.dart';
-import 'package:flutter_meetuper/src/screens/meetup_create_screen.dart';
+import 'package:flutter_meetuper/src/screens/login_screen.dart';
+import 'package:flutter_meetuper/src/screens/register_screen.dart';
 
+import '../blocs/auth_bloc/auth_bloc.dart';
+import '../blocs/bloc_provider.dart';
+import '../blocs/meetup_bloc.dart';
 import '../models/meetup.dart';
 import '../services/auth_api_service.dart';
-import 'login_screen.dart';
+import 'meetup_create_screen.dart';
 import 'meetup_detail_screen.dart';
 
 class MeetupDetailArguments {
@@ -34,10 +35,27 @@ class _MeetupHomeScreenState extends State<MeetupHomeScreen> {
     super.initState();
   }
 
+  _showBottomMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return _ModalBottomSheet(authBloc: authBloc);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Home')),
+      appBar: AppBar(
+        title: Text('Home'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => _showBottomMenu(context),
+          ),
+        ],
+      ),
       body: Column(
         children: <Widget>[
           _MeetupTitle(authBloc: authBloc),
@@ -90,11 +108,6 @@ class _MeetupTitle extends StatelessWidget {
                               message:
                                   'You have been successfully logged out!'),
                         );
-                        // Navigator.pushNamedAndRemoveUntil(
-                        //   context,
-                        //   LoginScreen.route,
-                        //   (Route<dynamic> route) => false,
-                        // );
                       },
                     );
                   },
@@ -202,6 +215,102 @@ class _MeetupList extends StatelessWidget {
           return null;
         },
       ),
+    );
+  }
+}
+
+class _ModalBottomSheet extends StatelessWidget {
+  final AuthBloc authBloc;
+  _ModalBottomSheet({@required this.authBloc}) : assert(authBloc != null);
+
+  final AuthApiService authApiService = AuthApiService();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<AuthenticationState>(
+      stream: authBloc.authState,
+      initialData: AuthenticationUninitialized(),
+      builder:
+          (BuildContext context, AsyncSnapshot<AuthenticationState> snapshot) {
+        final state = snapshot.data;
+
+        if (state is AuthenticationUninitialized) {
+          return Container(width: 0, height: 0);
+        }
+
+        if (state is AuthenticationAuthenticated) {
+          return Container(
+            height: 150.0,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(Icons.photo_album),
+                  title: Text('Create Meetup'),
+                  onTap: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      MeetupCreateScreen.route,
+                      ModalRoute.withName('/'),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.logout),
+                  title: Text('Logout'),
+                  onTap: () {
+                    authApiService.logout().then(
+                      (isLogout) {
+                        // Bu sayede bottom modal kapanır.
+                        Navigator.pop(context);
+
+                        authBloc.dispatch(
+                          LoggedOut(
+                              message:
+                                  'You have been successfully logged out!'),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (state is AuthenticationUnauthenticated) {
+          return Container(
+            height: 150.0,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(Icons.login),
+                  title: Text('Login'),
+                  onTap: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      LoginScreen.route,
+                      ModalRoute.withName(MeetupHomeScreen.route),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.person),
+                  title: Text('Register'),
+                  onTap: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      RegisterScreen.route,
+                      ModalRoute.withName(MeetupHomeScreen.route),
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+
+        return Container(width: 0, height: 0);
+      },
     );
   }
 }
