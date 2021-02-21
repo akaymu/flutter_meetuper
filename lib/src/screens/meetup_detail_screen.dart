@@ -42,13 +42,15 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
   }
 
   void _joinMeetup() {
-    // _userBloc.dispatch(JoinMeetup());
     _meetupBloc.joinMeetup(_meetup);
   }
 
   void _leaveMeetup() {
-    // _userBloc.dispatch(LeaveMeetup());
-    _meetupBloc.leaveMeetup(_meetup);
+    _meetupBloc.leaveMeetup(_meetup).then((_) {
+      if (screenIndex != 0) {
+        screenIndex = 0;
+      }
+    });
   }
 
   bool _isActiveView(Views view) {

@@ -60,8 +60,8 @@ class MeetupBloc implements BlocBase {
     }).catchError((err) => print(err));
   }
 
-  void leaveMeetup(Meetup meetup) {
-    _api.leaveMeetup(meetup.id).then((_) {
+  Future<bool> leaveMeetup(Meetup meetup) {
+    return _api.leaveMeetup(meetup.id).then((_) {
       User user = _auth.authUser;
 
       // Remove meetup from joined meetups of user
@@ -73,7 +73,12 @@ class MeetupBloc implements BlocBase {
 
       // Send it to listeners
       _inMeetupDetail.add(meetup);
-    }).catchError((err) => print(err));
+
+      return true;
+    }).catchError((err) {
+      print(err);
+      return false;
+    });
   }
 
   @override
